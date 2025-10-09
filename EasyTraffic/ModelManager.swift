@@ -6,3 +6,25 @@
 //
 
 import Foundation
+import Vision
+
+class ModelManager {
+    static let shared = ModelManager()
+    var model: VNCoreMLModel?
+
+    private init() {
+        loadModel()
+    }
+
+    private func loadModel() {
+        do {
+            model = try VNCoreMLModel(for: iOSstopSignModel().model)
+        } catch {
+            print("Error loading the Core ML model: \(error)")
+        }
+    }
+
+    func getCoreMLModel() -> VNCoreMLModel? {
+        return model
+    }
+}

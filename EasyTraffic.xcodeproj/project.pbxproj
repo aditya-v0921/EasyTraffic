@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		404B9C782C41D80700758C8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404B9C772C41D80700758C8D /* ViewController.swift */; };
+		404B9C7A2C41D8ED00758C8D /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */; };
+		404B9CB32C422D8200758C8D /* iOSstopSignModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */; };
+		4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4051B6182C4B3BF800529125 /* ModelManager.swift */; };
+		4051B68D2C4B56B700529125 /* Stop Sign Ahead.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */; };
+		4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4051B68E2C4C56C800529125 /* SS1.mlmodel */; };
+		40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */; };
+		40EB652D2C6DA30200543F6F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652C2C6DA30200543F6F /* CameraView.swift */; };
 		40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */; };
 		40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2792C32305D00FAE18B /* ContentView.swift */; };
 		40FBA27C2C32305E00FAE18B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40FBA27B2C32305E00FAE18B /* Assets.xcassets */; };
@@ -34,6 +42,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		404B9C772C41D80700758C8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		404B9CB12C41DC7100758C8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = iOSstopSignModel.mlmodel; sourceTree = "<group>"; };
+		4051B6182C4B3BF800529125 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
+		4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Stop Sign Ahead.mp3"; sourceTree = "<group>"; };
+		4051B68E2C4C56C800529125 /* SS1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SS1.mlmodel; sourceTree = "<group>"; };
+		40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenView.swift; sourceTree = "<group>"; };
+		40EB652C2C6DA30200543F6F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		40FBA2742C32305D00FAE18B /* EasyTraffic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyTraffic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyTrafficApp.swift; sourceTree = "<group>"; };
 		40FBA2792C32305D00FAE18B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -94,10 +111,19 @@
 		40FBA2762C32305D00FAE18B /* EasyTraffic */ = {
 			isa = PBXGroup;
 			children = (
+				4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */,
+				4051B68E2C4C56C800529125 /* SS1.mlmodel */,
+				404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */,
+				404B9CB12C41DC7100758C8D /* Info.plist */,
 				40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */,
 				40FBA2792C32305D00FAE18B /* ContentView.swift */,
 				40FBA27B2C32305E00FAE18B /* Assets.xcassets */,
 				40FBA27D2C32305E00FAE18B /* Preview Content */,
+				404B9C772C41D80700758C8D /* ViewController.swift */,
+				404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */,
+				4051B6182C4B3BF800529125 /* ModelManager.swift */,
+				40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */,
+				40EB652C2C6DA30200543F6F /* CameraView.swift */,
 			);
 			path = EasyTraffic;
 			sourceTree = "<group>";
@@ -231,6 +257,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4051B68D2C4B56B700529125 /* Stop Sign Ahead.mp3 in Resources */,
 				40FBA27F2C32305E00FAE18B /* Preview Assets.xcassets in Resources */,
 				40FBA27C2C32305E00FAE18B /* Assets.xcassets in Resources */,
 			);
@@ -257,8 +284,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				404B9C782C41D80700758C8D /* ViewController.swift in Sources */,
+				404B9C7A2C41D8ED00758C8D /* ViewControllerRepresentable.swift in Sources */,
 				40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */,
+				40EB652D2C6DA30200543F6F /* CameraView.swift in Sources */,
+				40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */,
+				404B9CB32C422D8200758C8D /* iOSstopSignModel.mlmodel in Sources */,
 				40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */,
+				4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */,
+				4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,7 +381,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -404,7 +438,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -422,8 +456,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EasyTraffic/Preview Content\"";
+				DEVELOPMENT_TEAM = N5SB8N6JUT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EasyTraffic/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to use camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -450,8 +487,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EasyTraffic/Preview Content\"";
+				DEVELOPMENT_TEAM = N5SB8N6JUT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EasyTraffic/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to use camera";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
