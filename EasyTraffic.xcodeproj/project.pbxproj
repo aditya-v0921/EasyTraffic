@@ -7,14 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		404B9C782C41D80700758C8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404B9C772C41D80700758C8D /* ViewController.swift */; };
-		404B9C7A2C41D8ED00758C8D /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */; };
-		404B9CB32C422D8200758C8D /* iOSstopSignModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */; };
 		4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4051B6182C4B3BF800529125 /* ModelManager.swift */; };
 		4051B68D2C4B56B700529125 /* Stop Sign Ahead.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */; };
 		4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4051B68E2C4C56C800529125 /* SS1.mlmodel */; };
+		409B3C982EB2F1FB00844E64 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3C972EB2F1F700844E64 /* User.swift */; };
+		409B3C9A2EB2F2C000844E64 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3C992EB2F2B400844E64 /* UserManager.swift */; };
+		409B3C9C2EB2F2E200844E64 /* ProfileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */; };
+		409B3CA12EB3098000844E64 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CA02EB3098000844E64 /* CameraView.swift */; };
+		40A5AD032EA19155006FD617 /* Announcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A5AD022EA1913F006FD617 /* Announcer.swift */; };
+		40A5AD0B2EA19228006FD617 /* DetectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A5AD0A2EA1921C006FD617 /* DetectionModels.swift */; };
 		40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */; };
-		40EB652D2C6DA30200543F6F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652C2C6DA30200543F6F /* CameraView.swift */; };
 		40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */; };
 		40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2792C32305D00FAE18B /* ContentView.swift */; };
 		40FBA27C2C32305E00FAE18B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40FBA27B2C32305E00FAE18B /* Assets.xcassets */; };
@@ -42,15 +44,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		404B9C772C41D80700758C8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
-		404B9CB12C41DC7100758C8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = iOSstopSignModel.mlmodel; sourceTree = "<group>"; };
+		404B9CB12C41DC7100758C8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4051B6182C4B3BF800529125 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Stop Sign Ahead.mp3"; sourceTree = "<group>"; };
 		4051B68E2C4C56C800529125 /* SS1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SS1.mlmodel; sourceTree = "<group>"; };
+		409B3C972EB2F1F700844E64 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		409B3C992EB2F2B400844E64 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelectionView.swift; sourceTree = "<group>"; };
+		409B3CA02EB3098000844E64 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		40A5AD022EA1913F006FD617 /* Announcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcer.swift; sourceTree = "<group>"; };
+		40A5AD0A2EA1921C006FD617 /* DetectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionModels.swift; sourceTree = "<group>"; };
 		40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenView.swift; sourceTree = "<group>"; };
-		40EB652C2C6DA30200543F6F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		40FBA2742C32305D00FAE18B /* EasyTraffic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyTraffic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyTrafficApp.swift; sourceTree = "<group>"; };
 		40FBA2792C32305D00FAE18B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -88,6 +92,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		409B3CA22EB30AB100844E64 /* Profiles */ = {
+			isa = PBXGroup;
+			children = (
+				409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */,
+				409B3C992EB2F2B400844E64 /* UserManager.swift */,
+				409B3C972EB2F1F700844E64 /* User.swift */,
+			);
+			path = Profiles;
+			sourceTree = "<group>";
+		};
+		409B3CA32EB30AEE00844E64 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				4051B68E2C4C56C800529125 /* SS1.mlmodel */,
+				40FBA27B2C32305E00FAE18B /* Assets.xcassets */,
+				4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */,
+				40FBA27E2C32305E00FAE18B /* Preview Assets.xcassets */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
+		409B3CA42EB30B2800844E64 /* ScreenView */ = {
+			isa = PBXGroup;
+			children = (
+				409B3CA02EB3098000844E64 /* CameraView.swift */,
+				40FBA2792C32305D00FAE18B /* ContentView.swift */,
+				40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */,
+			);
+			path = ScreenView;
+			sourceTree = "<group>";
+		};
+		409B3CA52EB30B8600844E64 /* Detection */ = {
+			isa = PBXGroup;
+			children = (
+				40A5AD0A2EA1921C006FD617 /* DetectionModels.swift */,
+				4051B6182C4B3BF800529125 /* ModelManager.swift */,
+				40A5AD022EA1913F006FD617 /* Announcer.swift */,
+			);
+			path = Detection;
+			sourceTree = "<group>";
+		};
 		40FBA26B2C32305D00FAE18B = {
 			isa = PBXGroup;
 			children = (
@@ -111,29 +156,14 @@
 		40FBA2762C32305D00FAE18B /* EasyTraffic */ = {
 			isa = PBXGroup;
 			children = (
-				4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */,
-				4051B68E2C4C56C800529125 /* SS1.mlmodel */,
-				404B9CB22C422D8200758C8D /* iOSstopSignModel.mlmodel */,
-				404B9CB12C41DC7100758C8D /* Info.plist */,
 				40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */,
-				40FBA2792C32305D00FAE18B /* ContentView.swift */,
-				40FBA27B2C32305E00FAE18B /* Assets.xcassets */,
-				40FBA27D2C32305E00FAE18B /* Preview Content */,
-				404B9C772C41D80700758C8D /* ViewController.swift */,
-				404B9C792C41D8ED00758C8D /* ViewControllerRepresentable.swift */,
-				4051B6182C4B3BF800529125 /* ModelManager.swift */,
-				40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */,
-				40EB652C2C6DA30200543F6F /* CameraView.swift */,
+				404B9CB12C41DC7100758C8D /* Info.plist */,
+				409B3CA52EB30B8600844E64 /* Detection */,
+				409B3CA42EB30B2800844E64 /* ScreenView */,
+				409B3CA22EB30AB100844E64 /* Profiles */,
+				409B3CA32EB30AEE00844E64 /* Misc */,
 			);
 			path = EasyTraffic;
-			sourceTree = "<group>";
-		};
-		40FBA27D2C32305E00FAE18B /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				40FBA27E2C32305E00FAE18B /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		40FBA2872C32305E00FAE18B /* EasyTrafficTests */ = {
@@ -284,14 +314,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				404B9C782C41D80700758C8D /* ViewController.swift in Sources */,
-				404B9C7A2C41D8ED00758C8D /* ViewControllerRepresentable.swift in Sources */,
 				40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */,
-				40EB652D2C6DA30200543F6F /* CameraView.swift in Sources */,
+				409B3C9A2EB2F2C000844E64 /* UserManager.swift in Sources */,
+				40A5AD032EA19155006FD617 /* Announcer.swift in Sources */,
 				40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */,
-				404B9CB32C422D8200758C8D /* iOSstopSignModel.mlmodel in Sources */,
 				40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */,
+				409B3C982EB2F1FB00844E64 /* User.swift in Sources */,
+				409B3CA12EB3098000844E64 /* CameraView.swift in Sources */,
 				4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */,
+				409B3C9C2EB2F2E200844E64 /* ProfileSelectionView.swift in Sources */,
+				40A5AD0B2EA19228006FD617 /* DetectionModels.swift in Sources */,
 				4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -455,7 +487,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"EasyTraffic/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N5SB8N6JUT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -486,7 +518,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"EasyTraffic/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N5SB8N6JUT;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
