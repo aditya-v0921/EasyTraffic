@@ -1,6 +1,6 @@
 # EasyTraffic
 
-![Cannot Load Image](EasyTrafficAppIcon.png)
+![Cannot Load Image](EasyTrafficIconSmall.png)
 
 Welcome! EasyTraffic is an iOS app that I have been working on in Swift that is used to detect stop signs by propping your phone on your dashboard. 
 
