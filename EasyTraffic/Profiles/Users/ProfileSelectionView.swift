@@ -85,10 +85,12 @@ struct ProfileSelectionView: View {
                     },
                     onEdit: {
                         showingEditUser = user
+                    },
+                    onDelete: {
+                        deleteUser(user)
                     }
                 )
             }
-            .onDelete(perform: deleteUsers)
         }
         .listStyle(.insetGrouped)
     }
@@ -109,6 +111,10 @@ struct ProfileSelectionView: View {
         }
     }
     
+    private func deleteUser(_ user: User) {
+        userManager.deleteUser(user)
+    }
+    
     private func deleteUsers(at offsets: IndexSet) {
         for index in offsets {
             let user = userManager.users[index]
@@ -124,6 +130,9 @@ struct ProfileRow: View {
     let isSelected: Bool
     let onSelect: () -> Void
     let onEdit: () -> Void
+    let onDelete: () -> Void
+    
+    @State private var showingDeleteConfirmation = false
     
     var body: some View {
         Button(action: onSelect) {
@@ -170,10 +179,24 @@ struct ProfileRow: View {
         }
         .buttonStyle(.plain)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(role: .destructive, action: {
+                showingDeleteConfirmation = true
+            }) {
+                Label("Delete", systemImage: "trash")
+            }
+            
             Button(action: onEdit) {
                 Label("Edit", systemImage: "pencil")
             }
             .tint(.blue)
+        }
+        .alert("Delete Profile?", isPresented: $showingDeleteConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                onDelete()
+            }
+        } message: {
+            Text("Are you sure you want to delete \(user.name)'s profile? This action cannot be undone.")
         }
     }
 }
@@ -213,19 +236,28 @@ struct AddEditUserView: View {
                         .textContentType(.name)
                         .autocapitalization(.words)
                     
-                    TextField("Email (optional)", text: $email)
+                    TextField("Email", text: $email)
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
+                        .autocorrectionDisabled()
+                }
+                
+                if !isEditMode {
+                    Section {
+                        Text("A valid email address is required to create a profile")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Section {
                     Button(action: save) {
                         Text(isEditMode ? "Save Changes" : "Create Profile")
                             .frame(maxWidth: .infinity)
-                            .foregroundColor(name.isEmpty ? .gray : .blue)
+                            .foregroundColor(canSave ? .blue : .gray)
                     }
-                    .disabled(name.isEmpty)
+                    .disabled(!canSave)
                 }
             }
             .navigationTitle(title)
@@ -251,23 +283,70 @@ struct AddEditUserView: View {
         }
     }
     
+    private var canSave: Bool {
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
+        let trimmedEmail = email.trimmingCharacters(in: .whitespaces)
+        
+        // For edit mode, just need a name
+        if isEditMode {
+            return !trimmedName.isEmpty
+        }
+        
+        // For add mode, need both name and valid email
+        return !trimmedName.isEmpty && isValidEmail(trimmedEmail)
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+    
     private func save() {
-        guard !name.trimmingCharacters(in: .whitespaces).isEmpty else {
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
+        let trimmedEmail = email.trimmingCharacters(in: .whitespaces)
+        
+        guard !trimmedName.isEmpty else {
             errorMessage = "Name cannot be empty"
             showingError = true
             return
         }
         
-        let trimmedEmail = email.trimmingCharacters(in: .whitespaces)
+        // Validate email for new profiles
+        if !isEditMode {
+            guard isValidEmail(trimmedEmail) else {
+                errorMessage = "Please enter a valid email address"
+                showingError = true
+                return
+            }
+        }
+        
         let finalEmail = trimmedEmail.isEmpty ? nil : trimmedEmail
+        
+        // Check for duplicate email (only if email is provided)
+        if let finalEmail = finalEmail {
+            let isDuplicate = userManager.users.contains { user in
+                // Skip self when editing
+                if case .edit(let editingUser) = mode, user.id == editingUser.id {
+                    return false
+                }
+                return user.email?.lowercased() == finalEmail.lowercased()
+            }
+            
+            if isDuplicate {
+                errorMessage = "An account with this email already exists"
+                showingError = true
+                return
+            }
+        }
         
         switch mode {
         case .add:
-            _ = userManager.createUser(name: name, email: finalEmail)
+            _ = userManager.createUser(name: trimmedName, email: finalEmail)
             
         case .edit(let user):
             var updatedUser = user
-            updatedUser.name = name
+            updatedUser.name = trimmedName
             updatedUser.email = finalEmail
             userManager.updateUser(updatedUser)
         }

@@ -21,7 +21,7 @@ struct DetectedObject {
 
 final class StabilityGate {
     private var hits = 0
-    var needed = 2
+    var needed = 4
     
     func update(present: Bool) -> Bool {
         hits = present ? hits + 1 : 0

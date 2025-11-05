@@ -11,7 +11,7 @@ final class Announcer: NSObject, AVSpeechSynthesizerDelegate {
     static let shared = Announcer()
     private let synth = AVSpeechSynthesizer()
     private var lastSpokenAt: Date = .distantPast
-    var minSpeakInterval: TimeInterval = 6.0
+    var minSpeakInterval: TimeInterval = 8.0
 
     private override init() {
         super.init()

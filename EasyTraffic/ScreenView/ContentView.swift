@@ -2,8 +2,16 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var userManager = UserManager.shared
+    @StateObject private var familyManager = FamilyManager.shared
     @State private var showingProfileSelection = false
     @State private var showingCamera = false
+    @State private var showingFamilyManagement = false
+    @State private var showingPendingInvites = false
+    
+    var pendingInvitesCount: Int {
+        guard let email = userManager.currentUser?.email else { return 0 }
+        return familyManager.getInvitesForUser(email: email).count
+    }
     
     var body: some View {
         NavigationView {
@@ -28,6 +36,22 @@ struct ContentView: View {
             .padding()
             .navigationTitle("EasyTraffic")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { showingFamilyManagement = true }) {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "person.3.fill")
+                                .font(.title3)
+                            
+                            if pendingInvitesCount > 0 {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: 10, height: 10)
+                                    .offset(x: 4, y: -4)
+                            }
+                        }
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingProfileSelection = true }) {
                         Image(systemName: "person.circle")
@@ -37,8 +61,24 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showingProfileSelection) {
                 ProfileSelectionView { selectedUser in
-                    print("✅ Selected user: \(selectedUser.name)")
+                    print("Selected user: \(selectedUser.name)")
+                    
+                    // Check for pending invites after profile selection
+                    if let email = selectedUser.email {
+                        let invites = familyManager.getInvitesForUser(email: email)
+                        if !invites.isEmpty {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showingPendingInvites = true
+                            }
+                        }
+                    }
                 }
+            }
+            .sheet(isPresented: $showingFamilyManagement) {
+                FamilyManagementView()
+            }
+            .sheet(isPresented: $showingPendingInvites) {
+                PendingInvitesView()
             }
             .fullScreenCover(isPresented: $showingCamera) {
                 CameraView()
@@ -172,7 +212,7 @@ struct ContentView: View {
     
     private func startDrive() {
         guard let user = userManager.currentUser else { return }
-        print("🚗 Starting drive for user: \(user.name)")
+        print("Starting drive for user: \(user.name)")
         
         // Show camera view
         showingCamera = true
@@ -180,7 +220,7 @@ struct ContentView: View {
     
     private func viewDriveHistory() {
         guard let user = userManager.currentUser else { return }
-        print("📊 Viewing drive history for user: \(user.name)")
+        print("Viewing drive history for user: \(user.name)")
         // TODO: Implement drive history view in Phase 2
     }
 }

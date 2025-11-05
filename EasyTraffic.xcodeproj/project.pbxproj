@@ -14,6 +14,10 @@
 		409B3C9A2EB2F2C000844E64 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3C992EB2F2B400844E64 /* UserManager.swift */; };
 		409B3C9C2EB2F2E200844E64 /* ProfileSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */; };
 		409B3CA12EB3098000844E64 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CA02EB3098000844E64 /* CameraView.swift */; };
+		409B3CA92EBBDBAC00844E64 /* Family.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CA82EBBDBA500844E64 /* Family.swift */; };
+		409B3CAB2EBBDBBA00844E64 /* FamilyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CAA2EBBDBB000844E64 /* FamilyManager.swift */; };
+		409B3CAD2EBBDBC300844E64 /* FamilyManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CAC2EBBDBBE00844E64 /* FamilyManagementView.swift */; };
+		409B3CAF2EBBDBDA00844E64 /* PendingInvitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409B3CAE2EBBDBCD00844E64 /* PendingInvitesView.swift */; };
 		40A5AD032EA19155006FD617 /* Announcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A5AD022EA1913F006FD617 /* Announcer.swift */; };
 		40A5AD0B2EA19228006FD617 /* DetectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A5AD0A2EA1921C006FD617 /* DetectionModels.swift */; };
 		40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */; };
@@ -52,6 +56,10 @@
 		409B3C992EB2F2B400844E64 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelectionView.swift; sourceTree = "<group>"; };
 		409B3CA02EB3098000844E64 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		409B3CA82EBBDBA500844E64 /* Family.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Family.swift; sourceTree = "<group>"; };
+		409B3CAA2EBBDBB000844E64 /* FamilyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyManager.swift; sourceTree = "<group>"; };
+		409B3CAC2EBBDBBE00844E64 /* FamilyManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyManagementView.swift; sourceTree = "<group>"; };
+		409B3CAE2EBBDBCD00844E64 /* PendingInvitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInvitesView.swift; sourceTree = "<group>"; };
 		40A5AD022EA1913F006FD617 /* Announcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcer.swift; sourceTree = "<group>"; };
 		40A5AD0A2EA1921C006FD617 /* DetectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionModels.swift; sourceTree = "<group>"; };
 		40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenView.swift; sourceTree = "<group>"; };
@@ -95,9 +103,8 @@
 		409B3CA22EB30AB100844E64 /* Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */,
-				409B3C992EB2F2B400844E64 /* UserManager.swift */,
-				409B3C972EB2F1F700844E64 /* User.swift */,
+				409B3CA72EBBDB9000844E64 /* Users */,
+				409B3CA62EBBDB8100844E64 /* Family */,
 			);
 			path = Profiles;
 			sourceTree = "<group>";
@@ -131,6 +138,27 @@
 				40A5AD022EA1913F006FD617 /* Announcer.swift */,
 			);
 			path = Detection;
+			sourceTree = "<group>";
+		};
+		409B3CA62EBBDB8100844E64 /* Family */ = {
+			isa = PBXGroup;
+			children = (
+				409B3CAE2EBBDBCD00844E64 /* PendingInvitesView.swift */,
+				409B3CAC2EBBDBBE00844E64 /* FamilyManagementView.swift */,
+				409B3CAA2EBBDBB000844E64 /* FamilyManager.swift */,
+				409B3CA82EBBDBA500844E64 /* Family.swift */,
+			);
+			path = Family;
+			sourceTree = "<group>";
+		};
+		409B3CA72EBBDB9000844E64 /* Users */ = {
+			isa = PBXGroup;
+			children = (
+				409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */,
+				409B3C992EB2F2B400844E64 /* UserManager.swift */,
+				409B3C972EB2F1F700844E64 /* User.swift */,
+			);
+			path = Users;
 			sourceTree = "<group>";
 		};
 		40FBA26B2C32305D00FAE18B = {
@@ -314,11 +342,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				409B3CAF2EBBDBDA00844E64 /* PendingInvitesView.swift in Sources */,
 				40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */,
+				409B3CAB2EBBDBBA00844E64 /* FamilyManager.swift in Sources */,
 				409B3C9A2EB2F2C000844E64 /* UserManager.swift in Sources */,
 				40A5AD032EA19155006FD617 /* Announcer.swift in Sources */,
 				40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */,
+				409B3CAD2EBBDBC300844E64 /* FamilyManagementView.swift in Sources */,
 				40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */,
+				409B3CA92EBBDBAC00844E64 /* Family.swift in Sources */,
 				409B3C982EB2F1FB00844E64 /* User.swift in Sources */,
 				409B3CA12EB3098000844E64 /* CameraView.swift in Sources */,
 				4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */,

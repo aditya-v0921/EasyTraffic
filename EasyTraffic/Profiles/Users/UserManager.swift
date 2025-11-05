@@ -23,8 +23,8 @@ class UserManager: ObservableObject {
     
     // MARK: - User Management
     
-    func createUser(name: String, email: String? = nil) -> User {
-        let newUser = User(name: name, email: email)
+    func createUser(name: String, email: String? = nil, role: UserRole = .parent) -> User {
+        let newUser = User(name: name, email: email, role: role)
         users.append(newUser)
         saveUsers()
         
@@ -81,13 +81,13 @@ class UserManager: ObservableObject {
             let data = try encoder.encode(users)
             UserDefaults.standard.set(data, forKey: usersKey)
         } catch {
-            print("❌ Failed to save users:", error)
+            print("Failed to save users:", error)
         }
     }
     
     private func loadUsers() {
         guard let data = UserDefaults.standard.data(forKey: usersKey) else {
-            print("ℹ️ No saved users found")
+            print("No saved users found")
             return
         }
         
@@ -95,9 +95,9 @@ class UserManager: ObservableObject {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             users = try decoder.decode([User].self, from: data)
-            print("✅ Loaded \(users.count) users")
+            print("Loaded \(users.count) users")
         } catch {
-            print("❌ Failed to load users:", error)
+            print("Failed to load users:", error)
         }
     }
     
@@ -117,7 +117,7 @@ class UserManager: ObservableObject {
         }
         
         currentUser = getUser(by: uuid)
-        print("✅ Current user:", currentUser?.name ?? "Unknown")
+        print("Current user:", currentUser?.name ?? "Unknown")
     }
     
     // MARK: - Utility
@@ -127,6 +127,6 @@ class UserManager: ObservableObject {
         currentUser = nil
         UserDefaults.standard.removeObject(forKey: usersKey)
         UserDefaults.standard.removeObject(forKey: currentUserKey)
-        print("🗑️ All user data cleared")
+        print("All user data cleared")
     }
 }
