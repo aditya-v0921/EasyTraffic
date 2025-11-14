@@ -15,3 +15,5 @@ struct EasyTrafficApp: App {
         }
     }
 }
+
+// Path for cd: $ cd /Users/adi/Desktop/EasyTraffic

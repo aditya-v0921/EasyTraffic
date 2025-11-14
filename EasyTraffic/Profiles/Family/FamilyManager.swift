@@ -219,9 +219,9 @@ class FamilyManager: ObservableObject {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             families = try decoder.decode([Family].self, from: data)
-            print("✅ Loaded \(families.count) families")
+            print("Loaded \(families.count) families")
         } catch {
-            print("❌ Failed to load families:", error)
+            print("Failed to load families:", error)
         }
     }
     
@@ -232,7 +232,7 @@ class FamilyManager: ObservableObject {
             let data = try encoder.encode(invites)
             UserDefaults.standard.set(data, forKey: invitesKey)
         } catch {
-            print("❌ Failed to save invites:", error)
+            print("Failed to save invites:", error)
         }
     }
     
@@ -243,9 +243,9 @@ class FamilyManager: ObservableObject {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             invites = try decoder.decode([FamilyInvite].self, from: data)
-            print("✅ Loaded \(invites.count) invites")
+            print("Loaded \(invites.count) invites")
         } catch {
-            print("❌ Failed to load invites:", error)
+            print("Failed to load invites:", error)
         }
     }
     
@@ -254,6 +254,6 @@ class FamilyManager: ObservableObject {
         invites = []
         UserDefaults.standard.removeObject(forKey: familiesKey)
         UserDefaults.standard.removeObject(forKey: invitesKey)
-        print("🗑️ All family data cleared")
+        print("All family data cleared")
     }
 }

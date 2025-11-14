@@ -25,7 +25,6 @@ struct CameraView: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
-        // Nothing to update
     }
 }
 
@@ -51,7 +50,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         
         // Log current user
         if let currentUser = UserManager.shared.currentUser {
-            print("🎥 Camera started for user: \(currentUser.name)")
+            print("Camera started for user: \(currentUser.name)")
         }
     }
     
@@ -76,7 +75,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     @objc func closeTapped() {
-        print("🛑 Ending drive")
+        print("Ending drive")
         captureSession.stopRunning()
         onDismiss?()
     }
@@ -165,7 +164,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             
             if let results = finishedReq.results as? [VNRecognizedObjectObservation], results.count > 0 {
                 if let topLabel = results.first?.labels.first {
-                    print("🏷️ Detected label: '\(topLabel.identifier)'")
+                    print("Detected label: '\(topLabel.identifier)'")
                 }
                 
                 if let topLabel = results.first?.labels.first, let confidence = results.first?.confidence {
@@ -176,19 +175,19 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     guard let lbl = obs.labels.first else { return false }
                     let idNorm = lbl.identifier.lowercased().replacingOccurrences(of: "_", with: " ")
                     let hasLabel = idNorm.contains("3")
-                    print("🔎 Checking '\(idNorm)': hasStop=\(hasLabel)")
+                    print("Checking '\(idNorm)': hasStop=\(hasLabel)")
                     return hasLabel
                 }) {
-                    print("🛑 STOP SIGN MATCHED!")
+                    print("STOP SIGN MATCHED")
                     
                     if let lbl = stop.labels.first {
                         let conf = max(stop.confidence, lbl.confidence)
                         
                         guard self.stability.update(present: true) else {
-                            print("❌ Not stable yet (need 2 frames)")
+                            print("Not stable yet (need 2 frames)")
                             return
                         }
-                        print("✅ Stability passed!")
+                        print("Stability passed!")
                         
                         let detected = DetectedObject(
                             bbox: stop.boundingBox,
@@ -198,16 +197,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                         )
                         
                         if self.deduper.isNewObject(detected, label: "stop_sign", minConfidence: self.minConfidence) {
-                            print("✅✅ ANNOUNCING: Stop sign ahead")
+                            print("ANNOUNCING: Stop sign ahead")
                             self.announcer.say("Stop sign ahead")
                             let gen = UINotificationFeedbackGenerator()
                             gen.notificationOccurred(.warning)
                         } else {
-                            print("❌ Deduper rejected (duplicate or low confidence)")
+                            print("Deduper rejected (duplicate or low confidence)")
                         }
                     }
                 } else {
-                    print("❌ No stop sign found in this frame")
+                    print("No stop sign found in this frame")
                     _ = self.stability.update(present: false)
                 }
                 

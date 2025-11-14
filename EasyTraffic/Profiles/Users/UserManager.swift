@@ -72,7 +72,7 @@ class UserManager: ObservableObject {
         return users.first { $0.id == id }
     }
     
-    // MARK: - Persistence (File-based JSON)
+    // MARK: - Persistence
     
     private func saveUsers() {
         do {
@@ -112,7 +112,7 @@ class UserManager: ObservableObject {
     private func loadCurrentUser() {
         guard let uuidString = UserDefaults.standard.string(forKey: currentUserKey),
               let uuid = UUID(uuidString: uuidString) else {
-            print("ℹ️ No current user set")
+            print("No current user set")
             return
         }
         
