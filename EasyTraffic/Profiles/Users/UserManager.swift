@@ -6,103 +6,127 @@
 //
 
 import Foundation
-import SwiftUI
-import FirebaseFirestore
-import FirebaseStorage
 
 class UserManager: ObservableObject {
     static let shared = UserManager()
-    private let db = Firestore.firestore()
-    private let storage = Storage.storage()
     
     @Published var users: [User] = []
     @Published var currentUser: User?
     
+    private let usersKey = "saved_users"
+    private let currentUserKey = "current_user_id"
+    
     private init() {
-        listenToUsers()
+        loadUsers()
+        loadCurrentUser()
     }
     
-    // 1. Listen for real-time updates from Cloud
-    private func listenToUsers() {
-        db.collection("users").addSnapshotListener { snapshot, error in
-            guard let documents = snapshot?.documents else {
-                print("Error fetching users: \(error?.localizedDescription ?? "Unknown")")
-                return
-            }
-            self.users = documents.compactMap { try? $0.data(as: User.self) }
+    // MARK: - User Management
+    
+    func createUser(name: String, email: String? = nil, role: UserRole = .parent) -> User {
+        let newUser = User(name: name, email: email, role: role)
+        users.append(newUser)
+        saveUsers()
+        
+        // Set as current user if first user
+        if users.count == 1 {
+            setCurrentUser(newUser)
+        }
+        
+        return newUser
+    }
+    
+    func updateUser(_ user: User) {
+        if let index = users.firstIndex(where: { $0.id == user.id }) {
+            users[index] = user
+            saveUsers()
             
-            // Re-sync current user if they exist in the new list
-            if let current = self.currentUser {
-                self.currentUser = self.users.first { $0.id == current.id }
+            // Update current user if it's the same
+            if currentUser?.id == user.id {
+                currentUser = user
             }
-        }
-    }
-
-    // 2. Create User (with Image Upload)
-    func createUser(name: String, email: String?, image: UIImage? = nil, completion: @escaping () -> Void = {}) {
-        var newUser = User(name: name, email: email)
-        
-        // Save to Firestore first to get an ID
-        do {
-            let ref = try db.collection("users").addDocument(from: newUser)
-            let userId = ref.documentID
-            newUser.id = userId
-            
-            if let image = image {
-                // If we have an image, upload it now
-                uploadImage(image, userId: userId) { url in
-                    newUser.profileImageUrl = url
-                    // Update the user again with the image URL
-                    try? self.db.collection("users").document(userId).setData(from: newUser)
-                    completion()
-                }
-            } else {
-                completion()
-            }
-        } catch {
-            print("Error creating user: \(error)")
         }
     }
     
-    // 3. Update User
-    func updateUser(_ user: User, newImage: UIImage? = nil) {
-        guard let userId = user.id else { return }
-        var userToUpdate = user
+    func deleteUser(_ user: User) {
+        users.removeAll { $0.id == user.id }
+        saveUsers()
         
-        if let newImage = newImage {
-            uploadImage(newImage, userId: userId) { url in
-                userToUpdate.profileImageUrl = url
-                try? self.db.collection("users").document(userId).setData(from: userToUpdate)
-            }
-        } else {
-            try? db.collection("users").document(userId).setData(from: userToUpdate)
-        }
-    }
-    
-    // Helper: Image Upload
-    private func uploadImage(_ image: UIImage, userId: String, completion: @escaping (String) -> Void) {
-        let ref = storage.reference().child("profile_images/\(userId).jpg")
-        guard let data = image.jpegData(compressionQuality: 0.5) else { return }
-        
-        ref.putData(data, metadata: nil) { _, error in
-            if error == nil {
-                ref.downloadURL { url, _ in
-                    if let urlString = url?.absoluteString {
-                        completion(urlString)
-                    }
-                }
-            }
+        // If deleting current user, switch to another or nil
+        if currentUser?.id == user.id {
+            currentUser = users.first
+            saveCurrentUser()
         }
     }
     
     func setCurrentUser(_ user: User) {
-        self.currentUser = user
-        var updated = user
-        updated.updateLastActive()
-        updateUser(updated)
+        var updatedUser = user
+        updatedUser.updateLastActive()
+        
+        currentUser = updatedUser
+        updateUser(updatedUser)
+        saveCurrentUser()
     }
     
-    func getUser(by id: String) -> User? {
+    func getUser(by id: UUID) -> User? {
         return users.first { $0.id == id }
+    }
+    
+    // MARK: - Persistence
+    
+    private func saveUsers() {
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            let data = try encoder.encode(users)
+            UserDefaults.standard.set(data, forKey: usersKey)
+        } catch {
+            print("Failed to save users:", error)
+        }
+    }
+    
+    private func loadUsers() {
+        guard let data = UserDefaults.standard.data(forKey: usersKey) else {
+            print("No saved users found")
+            return
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            users = try decoder.decode([User].self, from: data)
+            print("Loaded \(users.count) users")
+        } catch {
+            print("Failed to load users:", error)
+        }
+    }
+    
+    private func saveCurrentUser() {
+        if let userId = currentUser?.id {
+            UserDefaults.standard.set(userId.uuidString, forKey: currentUserKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: currentUserKey)
+        }
+    }
+    
+    private func loadCurrentUser() {
+        guard let uuidString = UserDefaults.standard.string(forKey: currentUserKey),
+              let uuid = UUID(uuidString: uuidString) else {
+            print("No current user set")
+            return
+        }
+        
+        currentUser = getUser(by: uuid)
+        print("Current user:", currentUser?.name ?? "Unknown")
+    }
+    
+    // MARK: - Utility
+    
+    func clearAllData() {
+        users = []
+        currentUser = nil
+        UserDefaults.standard.removeObject(forKey: usersKey)
+        UserDefaults.standard.removeObject(forKey: currentUserKey)
+        print("All user data cleared")
     }
 }

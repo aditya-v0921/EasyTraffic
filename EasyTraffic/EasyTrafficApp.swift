@@ -10,7 +10,7 @@ import Firebase
 
 @main
 struct EasyTrafficApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     init() {
         FirebaseApp.configure()
     }

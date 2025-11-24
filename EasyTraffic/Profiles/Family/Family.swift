@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import FirebaseFirestoreSwift
+//import FirebaseFirestoreSwift
+import FirebaseFirestore
 
 // MARK: - User Role
 
