@@ -246,7 +246,7 @@ class FirebaseFamilyManager: ObservableObject {
             guard let self = self else { return }
             
             if let error = error {
-                print("❌ Family listener error:", error)
+                print("Family listener error:", error)
                 return
             }
             
@@ -263,7 +263,7 @@ class FirebaseFamilyManager: ObservableObject {
                     print("Family updated in real-time")
                 }
             } catch {
-                print("❌ Failed to decode family:", error)
+                print("Failed to decode family:", error)
             }
         }
     }
@@ -279,7 +279,7 @@ class FirebaseFamilyManager: ObservableObject {
             guard let self = self else { return }
             
             if let error = error {
-                print("❌ Invites listener error:", error)
+                print("Invites listener error:", error)
                 return
             }
             
@@ -291,7 +291,7 @@ class FirebaseFamilyManager: ObservableObject {
             
             DispatchQueue.main.async {
                 self.invites = invites
-                print("🔄 Invites updated in real-time: \(invites.count)")
+                print("Invites updated in real-time: \(invites.count)")
             }
         }
     }
