@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 // MARK: - User Role
 
@@ -31,6 +32,7 @@ enum UserRole: String, Codable {
 // MARK: - Family
 
 struct Family: Codable, Identifiable {
+    @DocumentID var documentId: String?
     let id: UUID
     var name: String
     var createdBy: UUID // Parent user ID
@@ -58,11 +60,22 @@ struct Family: Codable, Identifiable {
     func isMember(_ userId: UUID) -> Bool {
         return isParent(userId) || isChild(userId)
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case documentId
+        case id
+        case name
+        case createdBy
+        case parentIds
+        case childIds
+        case createdAt
+    }
 }
 
 // MARK: - Family Invite
 
 struct FamilyInvite: Codable, Identifiable {
+    @DocumentID var documentId: String?
     let id: UUID
     let familyId: UUID
     let invitedEmail: String
@@ -92,5 +105,16 @@ struct FamilyInvite: Codable, Identifiable {
         // Invites expire after 7 days
         let expirationDate = createdAt.addingTimeInterval(7 * 24 * 60 * 60)
         return Date() > expirationDate
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case documentId
+        case id
+        case familyId
+        case invitedEmail
+        case role
+        case invitedBy
+        case createdAt
+        case status
     }
 }

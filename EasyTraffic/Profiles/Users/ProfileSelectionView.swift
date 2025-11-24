@@ -101,7 +101,7 @@ struct ProfileSelectionView: View {
         userManager.setCurrentUser(user)
         onProfileSelected?(user)
         
-        // Provide haptic feedback
+//        // Provide haptic feedback
 //        let generator = UIImpactFeedbackGenerator(style: .medium)
 //        generator.impactOccurred()
         
@@ -340,18 +340,48 @@ struct AddEditUserView: View {
             }
         }
         
-        switch mode {
-        case .add:
-            _ = userManager.createUser(name: trimmedName, email: finalEmail)
-            
-        case .edit(let user):
-            var updatedUser = user
-            updatedUser.name = trimmedName
-            updatedUser.email = finalEmail
-            userManager.updateUser(updatedUser)
+        // NEW: Use Firebase for creation/editing
+        Task {
+            do {
+                switch mode {
+                case .add:
+                    // Create Firebase account with password
+                    let password = generateTemporaryPassword() // Or let user set it
+                    let user = try await FirebaseUserManager.shared.createUser(
+                        name: trimmedName,
+                        email: finalEmail ?? "",
+                        password: password,
+                        role: .parent
+                    )
+                    
+                    // Check for pending invites
+                    let invites = try await FirebaseFamilyManager.shared.fetchInvites(for: finalEmail ?? "")
+                    if !invites.isEmpty {
+                        print("📧 Found \(invites.count) pending invites")
+                    }
+                    
+                case .edit(let user):
+                    var updatedUser = user
+                    updatedUser.name = trimmedName
+                    updatedUser.email = finalEmail
+                    try await FirebaseUserManager.shared.updateUser(updatedUser)
+                }
+                
+                DispatchQueue.main.async {
+                    dismiss()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.errorMessage = "Failed to save: \(error.localizedDescription)"
+                    self.showingError = true
+                }
+            }
         }
-        
-        dismiss()
+    }
+    
+    private func generateTemporaryPassword() -> String {
+        // Generate a random password or let user set it
+        return UUID().uuidString.prefix(8) + "Aa1!"
     }
 }
 

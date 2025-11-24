@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import FirebaseFirestoreSwift
 
 struct User: Codable, Identifiable, Equatable {
+    @DocumentID var documentId: String?  // Firebase document ID
     let id: UUID
     var name: String
     var email: String?
@@ -42,5 +44,17 @@ struct User: Codable, Identifiable, Equatable {
     // For Equatable
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
+    }
+    
+    // Custom coding keys for Firebase
+    enum CodingKeys: String, CodingKey {
+        case documentId
+        case id
+        case name
+        case email
+        case createdAt
+        case lastActive
+        case role
+        case familyId
     }
 }
