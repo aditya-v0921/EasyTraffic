@@ -41,7 +41,6 @@ struct User: Codable, Identifiable, Equatable {
         return role == .child
     }
     
-    // For Equatable
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
