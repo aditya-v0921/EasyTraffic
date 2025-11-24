@@ -102,8 +102,8 @@ struct ProfileSelectionView: View {
         onProfileSelected?(user)
         
         // Provide haptic feedback
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
+//        let generator = UIImpactFeedbackGenerator(style: .medium)
+//        generator.impactOccurred()
         
         // Dismiss after short delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
