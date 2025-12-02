@@ -53,7 +53,7 @@ class FirebaseUserManager: ObservableObject {
         
         do {
             try docRef.setData(from: user)
-            print("✅ User saved to Firestore:", user.id)
+            print("User saved to Firestore:", user.id)
             
             // Update local cache
             DispatchQueue.main.async {
@@ -64,7 +64,7 @@ class FirebaseUserManager: ObservableObject {
                 }
             }
         } catch {
-            print("❌ Failed to save user:", error)
+            print("Failed to save user:", error)
             throw error
         }
     }
@@ -76,10 +76,10 @@ class FirebaseUserManager: ObservableObject {
         
         do {
             let user = try await docRef.getDocument(as: User.self)
-            print("✅ User fetched:", user.id)
+            print("User fetched:", user.id)
             return user
         } catch {
-            print("❌ Failed to fetch user:", error)
+            print("Failed to fetch user:", error)
             return nil
         }
     }
@@ -119,7 +119,7 @@ class FirebaseUserManager: ObservableObject {
         
         do {
             try await docRef.delete()
-            print("✅ User deleted from Firestore")
+            print("User deleted from Firestore")
             
             DispatchQueue.main.async {
                 self.users.removeAll { $0.id == user.id }
@@ -128,7 +128,7 @@ class FirebaseUserManager: ObservableObject {
                 }
             }
         } catch {
-            print("❌ Failed to delete user:", error)
+            print("Failed to delete user:", error)
             throw error
         }
     }
@@ -144,12 +144,12 @@ class FirebaseUserManager: ObservableObject {
             guard let self = self else { return }
             
             if let error = error {
-                print("❌ User listener error:", error)
+                print("User listener error:", error)
                 return
             }
             
             guard let snapshot = snapshot, snapshot.exists else {
-                print("⚠️ User document doesn't exist")
+                print("User document doesn't exist")
                 return
             }
             
@@ -157,10 +157,10 @@ class FirebaseUserManager: ObservableObject {
                 let user = try snapshot.data(as: User.self)
                 DispatchQueue.main.async {
                     self.currentUser = user
-                    print("🔄 User updated in real-time:", user.name)
+                    print("User updated in real-time:", user.name)
                 }
             } catch {
-                print("❌ Failed to decode user:", error)
+                print("Failed to decode user:", error)
             }
         }
     }
@@ -216,7 +216,21 @@ class FirebaseUserManager: ObservableObject {
             self.users = users
         }
         
-        print("✅ Fetched \(users.count) users")
+        print("Fetched \(users.count) users")
         return users
     }
+    
+    // MARK: - Local lookup helpers
+
+    // Lookup by UUID
+    func getUser(by id: UUID) -> User? {
+            users.first { $0.id == id }
+        }
+        
+    // Convenience: lookup by String UUID
+    func getUser(by idString: String) -> User? {
+            guard let uuid = UUID(uuidString: idString) else { return nil }
+            return getUser(by: uuid)
+        }
+
 }

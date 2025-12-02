@@ -2,14 +2,20 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var userManager = UserManager.shared
+    @StateObject private var firebaseUserManager = FirebaseUserManager.shared
     @StateObject private var familyManager = FamilyManager.shared
     @State private var showingProfileSelection = false
     @State private var showingCamera = false
     @State private var showingFamilyManagement = false
     @State private var showingPendingInvites = false
+    @State private var showingDriveHistory = false
+    
+    var currentUser: User? {
+        firebaseUserManager.currentUser ?? userManager.currentUser
+    }
     
     var pendingInvitesCount: Int {
-        guard let email = userManager.currentUser?.email else { return 0 }
+        guard let email = currentUser?.email else { return 0 }
         return familyManager.getInvitesForUser(email: email).count
     }
     
@@ -17,8 +23,8 @@ struct ContentView: View {
         NavigationView {
             VStack(spacing: 20) {
                 // Current User Display
-                if let currentUser = userManager.currentUser {
-                    currentUserCard(user: currentUser)
+                if let user = currentUser {
+                    currentUserCard(user: user)
                 } else {
                     noUserSelectedView
                 }
@@ -35,6 +41,22 @@ struct ContentView: View {
             }
             .padding()
             .navigationTitle("EasyTraffic")
+            .task {
+                // Auto-sign in if Firebase user exists
+                if let firebaseUser = FirebaseAuthManager.shared.currentFirebaseUser {
+                    do {
+                        let user = try await firebaseUserManager.fetchUser(by: UUID(uuidString: firebaseUser.uid) ?? UUID())
+                        if let user = user {
+                            DispatchQueue.main.async {
+                                firebaseUserManager.currentUser = user
+                                userManager.currentUser = user
+                            }
+                        }
+                    } catch {
+                        print("Failed to fetch user:", error)
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { showingFamilyManagement = true }) {
@@ -79,6 +101,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showingPendingInvites) {
                 PendingInvitesView()
+            }
+            .sheet(isPresented: $showingDriveHistory) {
+                DriveHistoryView()
             }
             .fullScreenCover(isPresented: $showingCamera) {
                 CameraView()
@@ -211,17 +236,16 @@ struct ContentView: View {
     // MARK: - Actions
     
     private func startDrive() {
-        guard let user = userManager.currentUser else { return }
-        print("Starting drive for user: \(user.name)")
+        guard currentUser != nil else { return }
+        print("Starting drive for user: \(currentUser?.name ?? "Unknown")")
         
         // Show camera view
         showingCamera = true
     }
     
     private func viewDriveHistory() {
-        guard let user = userManager.currentUser else { return }
-        print("Viewing drive history for user: \(user.name)")
-        // TODO: Implement drive history view in Phase 2
+        guard currentUser != nil else { return }
+        showingDriveHistory = true
     }
 }
 

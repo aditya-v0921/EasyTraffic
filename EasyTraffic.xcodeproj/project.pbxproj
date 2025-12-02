@@ -10,6 +10,10 @@
 		4031FD122ED439EE00E6BA1B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4031FD112ED439EE00E6BA1B /* FirebaseAuth */; };
 		4031FD142ED439EE00E6BA1B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4031FD132ED439EE00E6BA1B /* FirebaseFirestore */; };
 		4031FD172ED43C1300E6BA1B /* FirebaseUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FD162ED43C0D00E6BA1B /* FirebaseUserManager.swift */; };
+		4031FD1A2EDE260900E6BA1B /* DriveHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FD192EDE260600E6BA1B /* DriveHistoryView.swift */; };
+		4031FD1E2EDE26B000E6BA1B /* Drive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FD1D2EDE26AE00E6BA1B /* Drive.swift */; };
+		4031FD202EDE26F100E6BA1B /* FirebaseDriveManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FD1F2EDE26E800E6BA1B /* FirebaseDriveManager.swift */; };
+		4031FD232EDE2C7000E6BA1B /* MotionDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4031FD222EDE2C6C00E6BA1B /* MotionDetector.swift */; };
 		4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4051B6182C4B3BF800529125 /* ModelManager.swift */; };
 		4051B68D2C4B56B700529125 /* Stop Sign Ahead.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */; };
 		4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4051B68E2C4C56C800529125 /* SS1.mlmodel */; };
@@ -60,6 +64,10 @@
 
 /* Begin PBXFileReference section */
 		4031FD162ED43C0D00E6BA1B /* FirebaseUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUserManager.swift; sourceTree = "<group>"; };
+		4031FD192EDE260600E6BA1B /* DriveHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveHistoryView.swift; sourceTree = "<group>"; };
+		4031FD1D2EDE26AE00E6BA1B /* Drive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drive.swift; sourceTree = "<group>"; };
+		4031FD1F2EDE26E800E6BA1B /* FirebaseDriveManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDriveManager.swift; sourceTree = "<group>"; };
+		4031FD222EDE2C6C00E6BA1B /* MotionDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionDetector.swift; sourceTree = "<group>"; };
 		404B9CB12C41DC7100758C8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4051B6182C4B3BF800529125 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		4051B68C2C4B56B700529125 /* Stop Sign Ahead.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Stop Sign Ahead.mp3"; sourceTree = "<group>"; };
@@ -128,14 +136,25 @@
 				4031FD162ED43C0D00E6BA1B /* FirebaseUserManager.swift */,
 				40BD4B452ED42E830002C362 /* FirebaseAuthManager.swift */,
 				40BD4B472ED42ECC0002C362 /* FirebaseFamilyManager.swift */,
+				4031FD1F2EDE26E800E6BA1B /* FirebaseDriveManager.swift */,
 			);
 			path = Firebase;
+			sourceTree = "<group>";
+		};
+		4031FD212EDE26F800E6BA1B /* Drive */ = {
+			isa = PBXGroup;
+			children = (
+				4031FD222EDE2C6C00E6BA1B /* MotionDetector.swift */,
+				4031FD1D2EDE26AE00E6BA1B /* Drive.swift */,
+				4031FD192EDE260600E6BA1B /* DriveHistoryView.swift */,
+			);
+			path = Drive;
 			sourceTree = "<group>";
 		};
 		409B3CA22EB30AB100844E64 /* Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				4031FD152ED43BFA00E6BA1B /* Firebase */,
+				409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */,
 				409B3CA72EBBDB9000844E64 /* Users */,
 				409B3CA62EBBDB8100844E64 /* Family */,
 			);
@@ -176,10 +195,10 @@
 		409B3CA62EBBDB8100844E64 /* Family */ = {
 			isa = PBXGroup;
 			children = (
-				409B3CAE2EBBDBCD00844E64 /* PendingInvitesView.swift */,
-				409B3CAC2EBBDBBE00844E64 /* FamilyManagementView.swift */,
 				409B3CAA2EBBDBB000844E64 /* FamilyManager.swift */,
+				409B3CAC2EBBDBBE00844E64 /* FamilyManagementView.swift */,
 				409B3CA82EBBDBA500844E64 /* Family.swift */,
+				409B3CAE2EBBDBCD00844E64 /* PendingInvitesView.swift */,
 			);
 			path = Family;
 			sourceTree = "<group>";
@@ -187,7 +206,6 @@
 		409B3CA72EBBDB9000844E64 /* Users */ = {
 			isa = PBXGroup;
 			children = (
-				409B3C9B2EB2F2D000844E64 /* ProfileSelectionView.swift */,
 				409B3C992EB2F2B400844E64 /* UserManager.swift */,
 				409B3C972EB2F1F700844E64 /* User.swift */,
 			);
@@ -223,6 +241,8 @@
 				409B3CA52EB30B8600844E64 /* Detection */,
 				409B3CA42EB30B2800844E64 /* ScreenView */,
 				409B3CA22EB30AB100844E64 /* Profiles */,
+				4031FD212EDE26F800E6BA1B /* Drive */,
+				4031FD152ED43BFA00E6BA1B /* Firebase */,
 				409B3CA32EB30AEE00844E64 /* Misc */,
 			);
 			path = EasyTraffic;
@@ -385,6 +405,7 @@
 				40BD4B462ED42E950002C362 /* FirebaseAuthManager.swift in Sources */,
 				409B3CAB2EBBDBBA00844E64 /* FamilyManager.swift in Sources */,
 				409B3C9A2EB2F2C000844E64 /* UserManager.swift in Sources */,
+				4031FD1A2EDE260900E6BA1B /* DriveHistoryView.swift in Sources */,
 				40A5AD032EA19155006FD617 /* Announcer.swift in Sources */,
 				40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */,
 				409B3CAD2EBBDBC300844E64 /* FamilyManagementView.swift in Sources */,
@@ -393,9 +414,12 @@
 				409B3CA92EBBDBAC00844E64 /* Family.swift in Sources */,
 				409B3C982EB2F1FB00844E64 /* User.swift in Sources */,
 				409B3CA12EB3098000844E64 /* CameraView.swift in Sources */,
+				4031FD202EDE26F100E6BA1B /* FirebaseDriveManager.swift in Sources */,
 				4051B6192C4B3BF800529125 /* ModelManager.swift in Sources */,
 				409B3C9C2EB2F2E200844E64 /* ProfileSelectionView.swift in Sources */,
+				4031FD232EDE2C7000E6BA1B /* MotionDetector.swift in Sources */,
 				40A5AD0B2EA19228006FD617 /* DetectionModels.swift in Sources */,
+				4031FD1E2EDE26B000E6BA1B /* Drive.swift in Sources */,
 				4051B68F2C4C56C800529125 /* SS1.mlmodel in Sources */,
 				4031FD172ED43C1300E6BA1B /* FirebaseUserManager.swift in Sources */,
 			);

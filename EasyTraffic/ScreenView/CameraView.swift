@@ -1,11 +1,3 @@
-//
-//  CameraView 2.swift
-//  EasyTraffic
-//
-//  Created by Aditya Vaswani on 10/29/25.
-//
-
-
 import SwiftUI
 import AVFoundation
 import AVKit
@@ -25,6 +17,7 @@ struct CameraView: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
+        // Nothing to update
     }
 }
 
@@ -39,8 +32,12 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private let announcer = Announcer.shared
     private let deduper = Deduper()
     private let stability = StabilityGate()
-    private let minConfidence: Float = 0.7
-    private let timeDetected: Float = 1.0
+    private let minConfidence: Float = 0.65
+    
+    // NEW: Drive tracking and motion detection
+    private let driveManager = FirebaseDriveManager.shared
+    private let motionDetector = MotionDetector()
+    private var hasDriveStarted = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,9 +45,17 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         setupLabel()
         setupCloseButton()
         
-        // Log current user
-        if let currentUser = UserManager.shared.currentUser {
-            print("Camera started for user: \(currentUser.name)")
+        // Start motion detection
+        motionDetector.startMonitoring()
+        
+        // Start drive session
+        Task {
+            if let currentUser = FirebaseUserManager.shared.currentUser ?? UserManager.shared.currentUser {
+                await driveManager.startDrive(for: currentUser)
+                hasDriveStarted = true
+                print("Camera started for user: \(currentUser.name)")
+                print("Drive session started")
+            }
         }
     }
     
@@ -76,29 +81,29 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     @objc func closeTapped() {
         print("Ending drive")
+        
+        // Stop motion detection
+        //motionDetector.stopMonitoring()
+        
+        // End drive session
+        if hasDriveStarted {
+            Task {
+                await driveManager.endDrive()
+                print("Drive session ended")
+            }
+        }
+        
         captureSession.stopRunning()
         onDismiss?()
     }
     
     func setupLabel() {
-        classificationLabel.translatesAutoresizingMaskIntoConstraints = false
-        classificationLabel.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        classificationLabel.textColor = .white
+        classificationLabel.frame = CGRect(x: 0, y: view.frame.height - 100, width: view.frame.width, height: 100)
+        classificationLabel.backgroundColor = .white
+        classificationLabel.textColor = .black
         classificationLabel.textAlignment = .center
         classificationLabel.numberOfLines = 0
-        classificationLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        classificationLabel.layer.cornerRadius = 12
-        classificationLabel.clipsToBounds = true
-        
         view.addSubview(classificationLabel)
-        
-        // Use Auto Layout instead of frame
-        NSLayoutConstraint.activate([
-            classificationLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            classificationLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            classificationLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            classificationLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 80)
-        ])
     }
     
     func updateClassificationLabel(with identifier: String, confidence: Float) {
@@ -164,7 +169,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             
             if let results = finishedReq.results as? [VNRecognizedObjectObservation], results.count > 0 {
                 if let topLabel = results.first?.labels.first {
-                    print("Detected label: '\(topLabel.identifier)'")
+                    print("🏷️ Detected label: '\(topLabel.identifier)'")
                 }
                 
                 if let topLabel = results.first?.labels.first, let confidence = results.first?.confidence {
@@ -175,19 +180,49 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     guard let lbl = obs.labels.first else { return false }
                     let idNorm = lbl.identifier.lowercased().replacingOccurrences(of: "_", with: " ")
                     let hasLabel = idNorm.contains("3")
-                    print("Checking '\(idNorm)': hasStop=\(hasLabel)")
-                    return hasLabel
+                    
+                    // NEW: Filter by bounding box size to reduce false positives
+                    let bbox = obs.boundingBox
+                    let boxWidth = bbox.width
+                    let boxHeight = bbox.height
+                    let boxArea = boxWidth * boxHeight
+                    
+                    // Stop signs should be:
+                    // - Not too small (> 2% of frame)
+                    // - Not too large (< 80% of frame)
+                    // - Roughly square (aspect ratio between 0.7 and 1.4)
+                    let minArea: CGFloat = 0.02  // 2% of frame
+                    let maxArea: CGFloat = 0.80  // 80% of frame
+                    let aspectRatio = boxHeight / boxWidth
+                    let minAspectRatio: CGFloat = 0.7
+                    let maxAspectRatio: CGFloat = 1.4
+                    
+                    let sizeValid = boxArea > minArea && boxArea < maxArea
+                    let aspectValid = aspectRatio > minAspectRatio && aspectRatio < maxAspectRatio
+                    
+                    if hasLabel && !sizeValid {
+                        print("❌ Rejected: size invalid (area: \(String(format: "%.3f", boxArea)))")
+                    }
+                    if hasLabel && !aspectValid {
+                        print("❌ Rejected: aspect ratio invalid (\(String(format: "%.2f", aspectRatio)))")
+                    }
+                    
+                    print("🔎 Checking '\(idNorm)': hasStop=\(hasLabel), sizeValid=\(sizeValid), aspectValid=\(aspectValid)")
+                    return hasLabel && sizeValid && aspectValid
                 }) {
-                    print("STOP SIGN MATCHED")
+                    print("STOP SIGN MATCHED!")
                     
                     if let lbl = stop.labels.first {
                         let conf = max(stop.confidence, lbl.confidence)
                         
-                        guard self.stability.update(present: true) else {
-                            print("Not stable yet (need 2 frames)")
+                        // Pass bounding box to stability gate for spatial + temporal check
+                        let isStable = self.stability.update(present: true)
+                        
+                        guard isStable else {
+                            print("Not stable yet; need consistent detection over time")
                             return
                         }
-                        print("Stability passed!")
+                        print("Stability passed! (consistent detection achieved)")
                         
                         let detected = DetectedObject(
                             bbox: stop.boundingBox,
@@ -201,6 +236,29 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                             self.announcer.say("Stop sign ahead")
                             let gen = UINotificationFeedbackGenerator()
                             gen.notificationOccurred(.warning)
+                            
+                            // NEW: Check if vehicle stopped and log event
+                            self.motionDetector.checkIfStoppedAtStopSign { didStop, duration in
+                                print("Stop check: didStop=\(didStop), duration=\(duration ?? 0)s")
+                                
+                                Task {
+                                    await self.driveManager.addStopSignEvent(
+                                        didStop: didStop,
+                                        stopDuration: duration,
+                                        confidence: conf,
+                                        location: self.motionDetector.currentLocation
+                                    )
+                                    
+                                    // Provide feedback
+                                    DispatchQueue.main.async {
+                                        if didStop {
+                                            self.announcer.say("Good stop")
+                                        } else {
+                                            self.announcer.say("Rolling stop detected")
+                                        }
+                                    }
+                                }
+                            }
                         } else {
                             print("Deduper rejected (duplicate or low confidence)")
                         }
@@ -219,3 +277,4 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
     }
 }
+

@@ -1,14 +1,8 @@
-//
-//  ProfileSelectionView.swift
-//  EasyTraffic
-//
-//  Created by Aditya Vaswani on 10/29/25.
-//
-
 import SwiftUI
 
 struct ProfileSelectionView: View {
     @StateObject private var userManager = UserManager.shared
+    @StateObject private var firebaseUserManager = FirebaseUserManager.shared
     @State private var showingAddUser = false
     @State private var showingEditUser: User?
     @Environment(\.dismiss) var dismiss
@@ -18,7 +12,7 @@ struct ProfileSelectionView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if userManager.users.isEmpty {
+                if firebaseUserManager.users.isEmpty && userManager.users.isEmpty {
                     emptyStateView
                 } else {
                     userListView
@@ -38,6 +32,14 @@ struct ProfileSelectionView: View {
             }
             .sheet(item: $showingEditUser) { user in
                 AddEditUserView(mode: .edit(user))
+            }
+            .task {
+                // Load Firebase users when view appears
+                do {
+                    _ = try await firebaseUserManager.fetchAllUsers()
+                } catch {
+                    print("Failed to fetch users:", error)
+                }
             }
         }
     }
@@ -76,10 +78,11 @@ struct ProfileSelectionView: View {
     
     private var userListView: some View {
         List {
-            ForEach(userManager.users) { user in
+            // Show Firebase users
+            ForEach(firebaseUserManager.users) { user in
                 ProfileRow(
                     user: user,
-                    isSelected: userManager.currentUser?.id == user.id,
+                    isSelected: firebaseUserManager.currentUser?.id == user.id,
                     onSelect: {
                         selectUser(user)
                     },
@@ -98,12 +101,18 @@ struct ProfileSelectionView: View {
     // MARK: - Actions
     
     private func selectUser(_ user: User) {
-        userManager.setCurrentUser(user)
+        // Set in both managers for now
+        firebaseUserManager.currentUser = user
+        userManager.currentUser = user
+        
         onProfileSelected?(user)
         
         // Provide haptic feedback
-//        let generator = UIImpactFeedbackGenerator(style: .medium)
-//        generator.impactOccurred()
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        // Start listening to this user's updates
+        firebaseUserManager.listenToUser(user.id)
         
         // Dismiss after short delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -112,7 +121,13 @@ struct ProfileSelectionView: View {
     }
     
     private func deleteUser(_ user: User) {
-        userManager.deleteUser(user)
+        Task {
+            do {
+                try await firebaseUserManager.deleteUser(user)
+            } catch {
+                print("Failed to delete user:", error)
+            }
+        }
     }
     
     private func deleteUsers(at offsets: IndexSet) {
