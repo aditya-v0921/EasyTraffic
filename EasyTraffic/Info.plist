@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>GMSApiKey</key>
-	<string>AIzaSyBECTy5yfk-pWwWz1ULqmQx3VJCAO8qtnM</string>
+	<string>$(GOOGLE_MAPS_API_KEY)</string>
 	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
