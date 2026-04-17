@@ -1,0 +1,279 @@
+{
+  "activityEntities" : [
+    "evaluationDataAdded",
+    [
+      {
+        "createdDate" : "2025-11-09T22:16:49Z",
+        "event" : "evaluationDataAdded",
+        "id" : "2285083F-C635-4B28-9AAB-C32B57BC7EAC",
+        "subtitle" : "valid",
+        "title" : "Testing Data Added"
+      }
+    ],
+    "trainingDataAdded",
+    [
+      {
+        "createdDate" : "2025-11-09T22:16:36Z",
+        "event" : "trainingDataAdded",
+        "id" : "498FE39B-AA65-4BA9-A6F6-D7672F94BAE5",
+        "subtitle" : "train",
+        "title" : "Training Data Added"
+      }
+    ],
+    "experimentCreated",
+    [
+      {
+        "createdDate" : "2025-11-09T22:16:27Z",
+        "event" : "experimentCreated",
+        "id" : "B1C8E071-D2BF-435A-808D-A2AF8EFCCDA4",
+        "subtitle" : "StopSignNEW 1",
+        "title" : "Model Source Created"
+      }
+    ]
+  ],
+  "contentDataResult" : {
+    "createdDate" : "2025-11-09T22:16:36Z"
+  },
+  "createdDate" : "2025-11-09T22:16:27Z",
+  "evaluationContainerEntity" : {
+    "createdDate" : "2025-11-09T22:26:46Z",
+    "evaluationEntities" : [
+
+    ],
+    "id" : "c42bdb0e-51b0-44d8-bdac-c8a78c6b7012",
+    "modifiedDate" : "2025-11-09T22:26:46Z",
+    "previewType" : "objectDetector",
+    "testingEvaluationEntity" : {
+      "analysedDataType" : "datasource",
+      "createdDate" : "2025-11-09T22:16:27Z",
+      "dataResult" : {
+        "classesCount" : 1,
+        "createdDate" : "2025-11-09T22:16:36Z",
+        "dataAnalysis" : {
+          "classifierAnalysis" : {
+
+          },
+          "issues" : [
+            {
+              "description" : "1 classes found, including 3",
+              "severity" : "debug"
+            },
+            {
+              "description" : "145 annotations found, automatically creating validation set",
+              "severity" : "good"
+            },
+            {
+              "description" : "Smallest class is \"3\" with 145 images",
+              "severity" : "debug"
+            },
+            {
+              "description" : "Largest class is \"3\" with 145 images",
+              "severity" : "debug"
+            }
+          ],
+          "objectDetectorAnalysis" : {
+            "details" : {
+
+            },
+            "labelStats" : {
+              "3" : 145
+            }
+          },
+          "summary" : {
+            "canUseValidation" : 1,
+            "classCount" : 1,
+            "counterExamples" : 0,
+            "sampleCount" : 144,
+            "suggestedMaxIterations" : 4000
+          }
+        },
+        "dataSourceID" : "08BADC6D-5953-4AEA-83ED-0B97F67E6B15",
+        "dataURL" : "file:///Users/adi/Downloads/Stop-Sign.v3i.createml/valid/",
+        "itemsCount" : 144
+      },
+      "dataSourceID" : "08BADC6D-5953-4AEA-83ED-0B97F67E6B15",
+      "id" : "d39581ef-bb21-4f42-aa28-3baa9c2cec57"
+    },
+    "trainingEvaluationEntity" : {
+      "analysedDataType" : "none",
+      "createdDate" : "2025-11-09T22:16:27Z",
+      "dataResult" : {
+        "classesCount" : 1,
+        "createdDate" : "2025-11-09T22:16:36Z",
+        "dataAnalysis" : {
+          "classifierAnalysis" : {
+
+          },
+          "issues" : [
+            {
+              "description" : "1 classes found, including 3",
+              "severity" : "debug"
+            },
+            {
+              "description" : "988 annotations found, automatically creating validation set",
+              "severity" : "good"
+            },
+            {
+              "description" : "Smallest class is \"3\" with 988 images",
+              "severity" : "debug"
+            },
+            {
+              "description" : "Largest class is \"3\" with 988 images",
+              "severity" : "debug"
+            }
+          ],
+          "objectDetectorAnalysis" : {
+            "details" : {
+
+            },
+            "labelStats" : {
+              "3" : 988
+            }
+          },
+          "summary" : {
+            "canUseValidation" : 1,
+            "classCount" : 1,
+            "counterExamples" : 0,
+            "sampleCount" : 968,
+            "suggestedMaxIterations" : 10000
+          }
+        },
+        "dataSourceID" : "E92B22F3-A4B3-4E84-A8CD-30243D33A9EC",
+        "dataURL" : "file:///Users/adi/Downloads/Stop-Sign.v3i.createml/train/",
+        "itemsCount" : 968
+      },
+      "dataSourceID" : "E92B22F3-A4B3-4E84-A8CD-30243D33A9EC",
+      "id" : "74d437c9-b6d8-4976-a550-0706ec4a5e60"
+    },
+    "validationEvaluationEntity" : {
+      "analysedDataType" : "auto",
+      "createdDate" : "2025-11-09T22:16:27Z",
+      "dataResult" : {
+        "createdDate" : "2025-11-09T22:16:36Z"
+      },
+      "id" : "ea6252a9-2e2a-44b2-b75e-06e4516cf5d8"
+    }
+  },
+  "evaluationEntity" : {
+    "analysedDataType" : "none",
+    "dataResult" : {
+
+    },
+    "id" : "b20cc37e-1e3e-455b-9ed1-92bb4f39cb3b"
+  },
+  "evaluationState" : "ready",
+  "id" : "A48C2F7C-F885-409D-A897-13E1B70578B0",
+  "modelEntity" : {
+    "createdDate" : "2025-11-09T22:16:27Z",
+    "experimentID" : "A48C2F7C-F885-409D-A897-13E1B70578B0",
+    "id" : "B2BE4849-3B07-4378-AA1B-5206437913E1",
+    "modifiedDate" : "2025-11-09T22:16:27Z",
+    "title" : "",
+    "version" : "1.0"
+  },
+  "modifiedDate" : "2025-11-09T22:26:46Z",
+  "preferredFilename" : "StopSignNEW 1",
+  "settingEntity" : {
+    "algorithmType" : "maxEnt",
+    "augmentations" : [
+
+    ],
+    "featureNames" : [
+
+    ],
+    "handActionClassifierAugmentations" : [
+
+    ],
+    "handPoseClassifierAugmentations" : [
+
+    ],
+    "harVideoAugmentations" : 0,
+    "iterationCount" : 20000,
+    "odAlgorithmType" : "darknetYolo",
+    "odGridHeight" : 13,
+    "odGridWidth" : 13,
+    "recommendedIterationCount" : 10000,
+    "seedType" : "default",
+    "styleTransferAlgorithmType" : "image",
+    "taskType" : "objectDetector",
+    "transferLearningEmbeddingType" : "dynamic"
+  },
+  "snapshotRole" : {
+    "withoutSnapshots" : 0
+  },
+  "state" : "ready",
+  "title" : "StopSignNEW 1",
+  "trainingEntity" : {
+    "analysedDataType" : "datasource",
+    "checkpointMetrics" : {
+
+    },
+    "dataResult" : {
+      "classesCount" : 1,
+      "createdDate" : "2025-11-09T22:16:36Z",
+      "dataAnalysis" : {
+        "classifierAnalysis" : {
+
+        },
+        "issues" : [
+          {
+            "description" : "1 classes found, including 3",
+            "severity" : "debug"
+          },
+          {
+            "description" : "988 annotations found, automatically creating validation set",
+            "severity" : "good"
+          },
+          {
+            "description" : "Smallest class is \"3\" with 988 images",
+            "severity" : "debug"
+          },
+          {
+            "description" : "Largest class is \"3\" with 988 images",
+            "severity" : "debug"
+          }
+        ],
+        "objectDetectorAnalysis" : {
+          "details" : {
+
+          },
+          "labelStats" : {
+            "3" : 988
+          }
+        },
+        "summary" : {
+          "canUseValidation" : 1,
+          "classCount" : 1,
+          "counterExamples" : 0,
+          "sampleCount" : 968,
+          "suggestedMaxIterations" : 10000
+        }
+      },
+      "dataSourceID" : "E92B22F3-A4B3-4E84-A8CD-30243D33A9EC",
+      "dataURL" : "file:///Users/adi/Downloads/Stop-Sign.v3i.createml/train/",
+      "itemsCount" : 968
+    },
+    "dataSourceID" : "E92B22F3-A4B3-4E84-A8CD-30243D33A9EC",
+    "featureExtractionCheckpointMayBeAvailable" : false,
+    "progress" : [
+
+    ],
+    "snapshottableCheckpoints" : {
+
+    }
+  },
+  "validationEntity" : {
+    "analysedDataType" : "auto",
+    "dataResult" : {
+      "createdDate" : "2025-11-09T22:16:36Z"
+    },
+    "splitOptions" : {
+      "strategy" : {
+        "automatic" : {
+
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

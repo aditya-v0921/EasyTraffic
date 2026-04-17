@@ -33,20 +33,35 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private let deduper = Deduper()
     private let stability = StabilityGate()
     private let minConfidence: Float = 0.65
+    private let visionQueue = DispatchQueue(label: "easytraffic.visionQueue", qos: .userInitiated)
+    private lazy var visionModel: VNCoreMLModel? = try? VNCoreMLModel(for: SS1().model)
+    private var isProcessingFrame = false
+    private var lastFrameProcessedAt: Date = .distantPast
+    private let frameProcessingInterval: TimeInterval = 0.35
+    private var speedTimer: Timer?
     
     // NEW: Drive tracking and motion detection
     private let driveManager = FirebaseDriveManager.shared
     private let motionDetector = MotionDetector()
     private var hasDriveStarted = false
     
+    private let dashboardOverlay = UIView()
+    private let speedLabel = UILabel()
+    private let speedCaptionLabel = UILabel()
+    private let driveStatusLabel = UILabel()
+    private let alertTitleLabel = UILabel()
+    private let alertDetailLabel = UILabel()
+    private let confidenceLabel = UILabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
         setupCamera()
-        setupLabel()
-        setupCloseButton()
+        setupDashboard()
         
         // Start motion detection
         motionDetector.startMonitoring()
+        startDashboardUpdates()
         
         // Start drive session
         Task {
@@ -83,7 +98,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         print("Ending drive")
         
         // Stop motion detection
-        //motionDetector.stopMonitoring()
+        motionDetector.stopMonitoring()
+        speedTimer?.invalidate()
+        speedTimer = nil
         
         // End drive session
         if hasDriveStarted {
@@ -98,9 +115,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     func setupLabel() {
-        classificationLabel.frame = CGRect(x: 0, y: view.frame.height - 100, width: view.frame.width, height: 100)
-        classificationLabel.backgroundColor = .white
-        classificationLabel.textColor = .black
+        classificationLabel.isHidden = true
+        classificationLabel.frame = .zero
+        classificationLabel.backgroundColor = .clear
+        classificationLabel.textColor = .white
         classificationLabel.textAlignment = .center
         classificationLabel.numberOfLines = 0
         view.addSubview(classificationLabel)
@@ -108,13 +126,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     func updateClassificationLabel(with identifier: String, confidence: Float) {
         DispatchQueue.main.async {
-            self.classificationLabel.text = "Label: Stop Sign, Confidence: \(confidence)"
+            guard confidence > 0 else { return }
+            self.alertTitleLabel.text = "Stop sign detected"
+            self.alertDetailLabel.text = "Camera confirmed a stop sign ahead"
+            self.confidenceLabel.text = "Confidence \(Int(confidence * 100))%"
         }
     }
     
     func setupCamera() {
         captureSession = AVCaptureSession()
-        captureSession.sessionPreset = .hd1920x1080
+        captureSession.sessionPreset = .hd1280x720
         
         guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
         
@@ -141,7 +162,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         view.layer.addSublayer(previewLayer)
         
         let dataOutput = AVCaptureVideoDataOutput()
-        dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+        dataOutput.alwaysDiscardsLateVideoFrames = true
+        dataOutput.setSampleBufferDelegate(self, queue: visionQueue)
         captureSession.addOutput(dataOutput)
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -149,17 +171,133 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
     }
     
+    private func setupDashboard() {
+        setupLabel()
+        
+        dashboardOverlay.translatesAutoresizingMaskIntoConstraints = false
+        dashboardOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.58)
+        view.addSubview(dashboardOverlay)
+        
+        speedLabel.translatesAutoresizingMaskIntoConstraints = false
+        speedLabel.text = "0"
+        speedLabel.textColor = .white
+        speedLabel.font = .monospacedDigitSystemFont(ofSize: 62, weight: .semibold)
+        speedLabel.textAlignment = .center
+        
+        speedCaptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        speedCaptionLabel.text = "mph"
+        speedCaptionLabel.textColor = UIColor.white.withAlphaComponent(0.72)
+        speedCaptionLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        speedCaptionLabel.textAlignment = .center
+        
+        driveStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        driveStatusLabel.text = "Camera detection active"
+        driveStatusLabel.textColor = UIColor.white.withAlphaComponent(0.78)
+        driveStatusLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        driveStatusLabel.textAlignment = .center
+        
+        alertTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        alertTitleLabel.text = "Drive ready"
+        alertTitleLabel.textColor = .white
+        alertTitleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        alertTitleLabel.textAlignment = .center
+        alertTitleLabel.numberOfLines = 1
+        alertTitleLabel.adjustsFontSizeToFitWidth = true
+        alertTitleLabel.minimumScaleFactor = 0.75
+        
+        alertDetailLabel.translatesAutoresizingMaskIntoConstraints = false
+        alertDetailLabel.text = "Detected signs will be announced"
+        alertDetailLabel.textColor = UIColor.white.withAlphaComponent(0.72)
+        alertDetailLabel.font = .systemFont(ofSize: 15, weight: .regular)
+        alertDetailLabel.textAlignment = .center
+        alertDetailLabel.numberOfLines = 2
+        
+        confidenceLabel.translatesAutoresizingMaskIntoConstraints = false
+        confidenceLabel.text = "Live mode"
+        confidenceLabel.textColor = UIColor.white.withAlphaComponent(0.62)
+        confidenceLabel.font = .monospacedDigitSystemFont(ofSize: 13, weight: .medium)
+        confidenceLabel.textAlignment = .center
+        
+        let speedStack = UIStackView(arrangedSubviews: [speedLabel, speedCaptionLabel])
+        speedStack.translatesAutoresizingMaskIntoConstraints = false
+        speedStack.axis = .vertical
+        speedStack.spacing = -6
+        speedStack.alignment = .center
+        
+        let alertStack = UIStackView(arrangedSubviews: [alertTitleLabel, alertDetailLabel, confidenceLabel])
+        alertStack.translatesAutoresizingMaskIntoConstraints = false
+        alertStack.axis = .vertical
+        alertStack.spacing = 7
+        alertStack.alignment = .fill
+        
+        dashboardOverlay.addSubview(speedStack)
+        dashboardOverlay.addSubview(alertStack)
+        dashboardOverlay.addSubview(driveStatusLabel)
+        
+        let closeButton = UIButton(type: .system)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("End Drive", for: .normal)
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.backgroundColor = UIColor.white.withAlphaComponent(0.14)
+        closeButton.layer.cornerRadius = 8
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        view.addSubview(closeButton)
+        
+        NSLayoutConstraint.activate([
+            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            closeButton.widthAnchor.constraint(equalToConstant: 112),
+            closeButton.heightAnchor.constraint(equalToConstant: 42),
+            
+            dashboardOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            dashboardOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            dashboardOverlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            dashboardOverlay.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.32),
+            
+            speedStack.leadingAnchor.constraint(equalTo: dashboardOverlay.leadingAnchor, constant: 28),
+            speedStack.centerYAnchor.constraint(equalTo: dashboardOverlay.centerYAnchor, constant: -4),
+            speedStack.widthAnchor.constraint(equalToConstant: 118),
+            
+            alertStack.leadingAnchor.constraint(equalTo: speedStack.trailingAnchor, constant: 18),
+            alertStack.trailingAnchor.constraint(equalTo: dashboardOverlay.trailingAnchor, constant: -24),
+            alertStack.centerYAnchor.constraint(equalTo: dashboardOverlay.centerYAnchor, constant: -8),
+            
+            driveStatusLabel.leadingAnchor.constraint(equalTo: dashboardOverlay.leadingAnchor, constant: 24),
+            driveStatusLabel.trailingAnchor.constraint(equalTo: dashboardOverlay.trailingAnchor, constant: -24),
+            driveStatusLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+        ])
+    }
+    
+    private func startDashboardUpdates() {
+        speedTimer?.invalidate()
+        speedTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.refreshDrivingStatus()
+        }
+        refreshDrivingStatus()
+    }
+    
+    private func refreshDrivingStatus() {
+        let mph = max(0, motionDetector.currentSpeed * 2.23694)
+        speedLabel.text = "\(Int(mph.rounded()))"
+        driveStatusLabel.text = motionDetector.isMoving ? "Moving - scanning ahead" : "Stopped - checking full stop"
+    }
+    
     // MARK: - Video Capture Delegate
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        guard !isProcessingFrame else { return }
+        guard Date().timeIntervalSince(lastFrameProcessedAt) >= frameProcessingInterval else { return }
+        guard let model = visionModel else { return }
         
-        guard let model = try? VNCoreMLModel(for: SS1().model) else { return }
+        isProcessingFrame = true
+        lastFrameProcessedAt = Date()
+        defer { isProcessingFrame = false }
+        
+        guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         
         let request = VNCoreMLRequest(model: model) { [weak self] (finishedReq, err) in
             guard let self = self else { return }
-            
-            print(finishedReq.results?.first?.confidence)
             
             if let error = err {
                 self.updateClassificationLabel(with: "Error: \(error.localizedDescription)", confidence: 0)
@@ -169,11 +307,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             
             if let results = finishedReq.results as? [VNRecognizedObjectObservation], results.count > 0 {
                 if let topLabel = results.first?.labels.first {
-                    print("🏷️ Detected label: '\(topLabel.identifier)'")
-                }
-                
-                if let topLabel = results.first?.labels.first, let confidence = results.first?.confidence {
-                    self.updateClassificationLabel(with: topLabel.identifier, confidence: confidence)
+                    print("Detected label: '\(topLabel.identifier)'")
                 }
                 
                 if let stop = results.first(where: { obs in
@@ -200,20 +334,13 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     let sizeValid = boxArea > minArea && boxArea < maxArea
                     let aspectValid = aspectRatio > minAspectRatio && aspectRatio < maxAspectRatio
                     
-                    if hasLabel && !sizeValid {
-                        print("❌ Rejected: size invalid (area: \(String(format: "%.3f", boxArea)))")
-                    }
-                    if hasLabel && !aspectValid {
-                        print("❌ Rejected: aspect ratio invalid (\(String(format: "%.2f", aspectRatio)))")
-                    }
-                    
-                    print("🔎 Checking '\(idNorm)': hasStop=\(hasLabel), sizeValid=\(sizeValid), aspectValid=\(aspectValid)")
                     return hasLabel && sizeValid && aspectValid
                 }) {
                     print("STOP SIGN MATCHED!")
                     
                     if let lbl = stop.labels.first {
                         let conf = max(stop.confidence, lbl.confidence)
+                        self.updateClassificationLabel(with: lbl.identifier, confidence: conf)
                         
                         // Pass bounding box to stability gate for spatial + temporal check
                         let isStable = self.stability.update(present: true)
@@ -264,7 +391,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                         }
                     }
                 } else {
-                    print("No stop sign found in this frame")
                     _ = self.stability.update(present: false)
                 }
                 
@@ -277,4 +403,3 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
     }
 }
-

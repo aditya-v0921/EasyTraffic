@@ -1,0 +1,71 @@
+{
+  "activityEntities" : [
+    "dataSourceCreated",
+    [
+      {
+        "createdDate" : "2025-11-09T22:16:49Z",
+        "event" : "dataSourceCreated",
+        "id" : "751F9A55-C3A5-434C-9A2D-ABB32E103732",
+        "subtitle" : "valid",
+        "title" : "Data Source Created"
+      }
+    ]
+  ],
+  "createdDate" : "2025-11-09T22:16:49Z",
+  "dataPathRelativeToProjectURL" : "../../Downloads/Stop-Sign.v3i.createml/valid/",
+  "dataResult" : {
+    "classesCount" : 1,
+    "createdDate" : "2025-11-09T22:16:49Z",
+    "dataAnalysis" : {
+      "classifierAnalysis" : {
+
+      },
+      "issues" : [
+        {
+          "description" : "1 classes found, including 3",
+          "severity" : "debug"
+        },
+        {
+          "description" : "145 annotations found, automatically creating validation set",
+          "severity" : "good"
+        },
+        {
+          "description" : "Smallest class is \"3\" with 145 images",
+          "severity" : "debug"
+        },
+        {
+          "description" : "Largest class is \"3\" with 145 images",
+          "severity" : "debug"
+        }
+      ],
+      "objectDetectorAnalysis" : {
+        "details" : {
+
+        },
+        "labelStats" : {
+          "3" : 145
+        }
+      },
+      "summary" : {
+        "canUseValidation" : 1,
+        "classCount" : 1,
+        "counterExamples" : 0,
+        "sampleCount" : 144,
+        "suggestedMaxIterations" : 4000
+      }
+    },
+    "dataSourceID" : "08BADC6D-5953-4AEA-83ED-0B97F67E6B15",
+    "dataURL" : "file:///Users/adi/Downloads/Stop-Sign.v3i.createml/valid/",
+    "itemsCount" : 144
+  },
+  "dataURL" : "file:///Users/adi/Downloads/Stop-Sign.v3i.createml/valid/",
+  "experimentIDs" : [
+    "A48C2F7C-F885-409D-A897-13E1B70578B0"
+  ],
+  "id" : "08BADC6D-5953-4AEA-83ED-0B97F67E6B15",
+  "modifiedDate" : "2025-11-09T22:26:53Z",
+  "pathType" : 0,
+  "preferredFilename" : "valid",
+  "title" : "valid",
+  "version" : "1.0"
+}

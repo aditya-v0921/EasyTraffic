@@ -1,0 +1,29 @@
+{
+  "activityEntities" : [
+    "projectCreated",
+    [
+      {
+        "createdDate" : "2025-11-09T22:16:27Z",
+        "event" : "projectCreated",
+        "id" : "B034C57D-4175-4CF9-B86C-E7075F0D5CE4",
+        "subtitle" : "StopSignNEW",
+        "title" : "Project Created"
+      }
+    ]
+  ],
+  "authorName" : "Aditya Vaswani",
+  "createdDate" : "2025-11-09T22:16:27Z",
+  "description" : "Latest Model",
+  "id" : "6A3183C1-C20C-4D7D-8BBA-FBAD53641729",
+  "license" : "",
+  "location" : "",
+  "modifiedDate" : "2025-11-09T22:16:27Z",
+  "projectName" : "StopSignNEW",
+  "settingsEntity" : {
+    "snapshotOnExtendTraining" : true,
+    "snapshotOnResumeTraining" : false
+  },
+  "taskType" : "objectDetector",
+  "title" : "Object Detection",
+  "version" : "1.1"
+}

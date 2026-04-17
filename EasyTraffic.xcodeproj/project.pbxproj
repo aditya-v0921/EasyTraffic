@@ -36,6 +36,7 @@
 		40BD4B462ED42E950002C362 /* FirebaseAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BD4B452ED42E830002C362 /* FirebaseAuthManager.swift */; };
 		40BD4B482ED42ED80002C362 /* FirebaseFamilyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40BD4B472ED42ECC0002C362 /* FirebaseFamilyManager.swift */; };
 		40EB652B2C6DA2DB00543F6F /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40EB652A2C6DA2DB00543F6F /* HomeScreenView.swift */; };
+		40F70A772F91B22600B7EB4E /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 40F70A762F91B22600B7EB4E /* GoogleMaps */; };
 		40FBA2782C32305D00FAE18B /* EasyTrafficApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2772C32305D00FAE18B /* EasyTrafficApp.swift */; };
 		40FBA27A2C32305D00FAE18B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FBA2792C32305D00FAE18B /* ContentView.swift */; };
 		40FBA27C2C32305E00FAE18B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40FBA27B2C32305E00FAE18B /* Assets.xcassets */; };
@@ -103,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40F70A772F91B22600B7EB4E /* GoogleMaps in Frameworks */,
 				40BD4B3C2ED4236F0002C362 /* FirebaseAILogic in Frameworks */,
 				4031FD122ED439EE00E6BA1B /* FirebaseAuth in Frameworks */,
 				40BD4B422ED4236F0002C362 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
@@ -355,6 +357,7 @@
 			mainGroup = 40FBA26B2C32305D00FAE18B;
 			packageReferences = (
 				4031FD102ED439EE00E6BA1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				40F70A752F91B22600B7EB4E /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
 			);
 			productRefGroup = 40FBA2752C32305D00FAE18B /* Products */;
 			projectDirPath = "";
@@ -769,6 +772,14 @@
 				minimumVersion = 12.6.0;
 			};
 		};
+		40F70A752F91B22600B7EB4E /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.12.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -806,6 +817,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 40BD4B382ED4236F0002C362 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalyticsIdentitySupport;
+		};
+		40F70A762F91B22600B7EB4E /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 40F70A752F91B22600B7EB4E /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

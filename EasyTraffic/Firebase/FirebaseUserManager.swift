@@ -98,10 +98,10 @@ class FirebaseUserManager: ObservableObject {
             }
             
             let user = try document.data(as: User.self)
-            print("✅ User fetched by email:", user.id)
+            print("User fetched by email:", user.id)
             return user
         } catch {
-            print("❌ Failed to fetch user by email:", error)
+            print("Failed to fetch user by email:", error)
             return nil
         }
     }

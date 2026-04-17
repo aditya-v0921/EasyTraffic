@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GMSApiKey</key>
+	<string>AIzaSyBECTy5yfk-pWwWz1ULqmQx3VJCAO8qtnM</string>
 	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>EasyTraffic uses your location to estimate speed, log stop events, and support upcoming road alerts.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app needs to announce through your speaker.</string>
 	<key>NSMicrophoneUsageDescription</key>
