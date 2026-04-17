@@ -21,11 +21,194 @@ struct CameraView: UIViewControllerRepresentable {
     }
 }
 
+// MARK: - Tesla-Style Dashboard Background
+
+final class DrivingRoadView: UIView {
+    var speed: Double = 0 {
+        didSet { setNeedsDisplay() }
+    }
+    
+    var isMoving: Bool = false {
+        didSet { setNeedsDisplay() }
+    }
+    
+    private var lastStopSignConfidence: Float?
+    private var lastStopSignAt: Date?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isOpaque = true
+        backgroundColor = .black
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        isOpaque = true
+        backgroundColor = .black
+    }
+    
+    func showStopSign(confidence: Float) {
+        lastStopSignConfidence = confidence
+        lastStopSignAt = Date()
+        setNeedsDisplay()
+    }
+    
+    override func draw(_ rect: CGRect) {
+        guard let context = UIGraphicsGetCurrentContext() else { return }
+        context.setFillColor(UIColor.black.cgColor)
+        context.fill(rect)
+        
+        drawRoad(in: rect)
+        drawEgoVehicle(in: rect)
+        drawRoadStatus(in: rect)
+        drawDetectionMarker(in: rect)
+    }
+    
+    private func drawRoad(in rect: CGRect) {
+        let roadTopWidth = rect.width * 0.20
+        let roadBottomWidth = rect.width * 0.88
+        let horizonY = rect.height * 0.13
+        let bottomY = rect.height * 0.76
+        let centerX = rect.midX
+        
+        let roadPath = UIBezierPath()
+        roadPath.move(to: CGPoint(x: centerX - roadTopWidth / 2, y: horizonY))
+        roadPath.addLine(to: CGPoint(x: centerX + roadTopWidth / 2, y: horizonY))
+        roadPath.addLine(to: CGPoint(x: centerX + roadBottomWidth / 2, y: bottomY))
+        roadPath.addLine(to: CGPoint(x: centerX - roadBottomWidth / 2, y: bottomY))
+        roadPath.close()
+        
+        UIColor(red: 0.08, green: 0.09, blue: 0.10, alpha: 1).setFill()
+        roadPath.fill()
+        
+        let laneColor = UIColor.white.withAlphaComponent(0.28)
+        laneColor.setStroke()
+        
+        for offset: CGFloat in [-0.18, 0.18] {
+            let lanePath = UIBezierPath()
+            lanePath.lineWidth = 3
+            lanePath.lineCapStyle = .round
+            lanePath.move(to: CGPoint(x: centerX + rect.width * offset * 0.35, y: horizonY + 26))
+            lanePath.addLine(to: CGPoint(x: centerX + rect.width * offset, y: bottomY - 12))
+            lanePath.stroke()
+        }
+        
+        UIColor.white.withAlphaComponent(0.16).setStroke()
+        roadPath.lineWidth = 2
+        roadPath.stroke()
+    }
+    
+    private func drawEgoVehicle(in rect: CGRect) {
+        let carWidth = min(rect.width * 0.24, 140)
+        let carHeight = carWidth * 0.58
+        let carRect = CGRect(
+            x: rect.midX - carWidth / 2,
+            y: rect.height * 0.57,
+            width: carWidth,
+            height: carHeight
+        )
+        
+        let body = UIBezierPath(roundedRect: carRect, cornerRadius: 8)
+        UIColor(red: 0.88, green: 0.91, blue: 0.92, alpha: 1).setFill()
+        body.fill()
+        
+        let cabinRect = CGRect(
+            x: carRect.minX + carRect.width * 0.22,
+            y: carRect.minY + carRect.height * 0.15,
+            width: carRect.width * 0.56,
+            height: carRect.height * 0.30
+        )
+        UIColor(red: 0.12, green: 0.14, blue: 0.16, alpha: 1).setFill()
+        UIBezierPath(roundedRect: cabinRect, cornerRadius: 5).fill()
+        
+        UIColor.black.withAlphaComponent(0.35).setFill()
+        UIBezierPath(ovalIn: CGRect(x: carRect.minX + 12, y: carRect.maxY - 9, width: 24, height: 10)).fill()
+        UIBezierPath(ovalIn: CGRect(x: carRect.maxX - 36, y: carRect.maxY - 9, width: 24, height: 10)).fill()
+    }
+    
+    private func drawRoadStatus(in rect: CGRect) {
+        let status = isMoving ? "SCANNING" : "READY"
+        let statusColor = isMoving
+            ? UIColor(red: 0.31, green: 0.79, blue: 0.55, alpha: 1)
+            : UIColor.white.withAlphaComponent(0.70)
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.monospacedSystemFont(ofSize: 14, weight: .medium),
+            .foregroundColor: statusColor
+        ]
+        let size = status.size(withAttributes: attributes)
+        status.draw(
+            at: CGPoint(x: rect.midX - size.width / 2, y: safeAreaInsets.top + 72),
+            withAttributes: attributes
+        )
+    }
+    
+    private func drawDetectionMarker(in rect: CGRect) {
+        guard let confidence = lastStopSignConfidence,
+              let detectedAt = lastStopSignAt,
+              Date().timeIntervalSince(detectedAt) < 6 else {
+            return
+        }
+        
+        let markerSize: CGFloat = 64
+        let markerRect = CGRect(
+            x: rect.midX - markerSize / 2,
+            y: rect.height * 0.23,
+            width: markerSize,
+            height: markerSize
+        )
+        
+        let stopPath = UIBezierPath()
+        let center = CGPoint(x: markerRect.midX, y: markerRect.midY)
+        let radius = markerSize / 2
+        for index in 0..<8 {
+            let angle = Double(index) * .pi / 4 + .pi / 8
+            let point = CGPoint(
+                x: center.x + CGFloat(cos(angle)) * radius,
+                y: center.y + CGFloat(sin(angle)) * radius
+            )
+            if index == 0 {
+                stopPath.move(to: point)
+            } else {
+                stopPath.addLine(to: point)
+            }
+        }
+        stopPath.close()
+        
+        UIColor(red: 0.86, green: 0.11, blue: 0.13, alpha: 1).setFill()
+        stopPath.fill()
+        UIColor.white.setStroke()
+        stopPath.lineWidth = 3
+        stopPath.stroke()
+        
+        let stopText = "STOP"
+        let stopAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 18, weight: .bold),
+            .foregroundColor: UIColor.white
+        ]
+        let stopSize = stopText.size(withAttributes: stopAttributes)
+        stopText.draw(
+            at: CGPoint(x: center.x - stopSize.width / 2, y: center.y - stopSize.height / 2),
+            withAttributes: stopAttributes
+        )
+        
+        let confidenceText = "\(Int(confidence * 100))%"
+        let confidenceAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.monospacedSystemFont(ofSize: 13, weight: .medium),
+            .foregroundColor: UIColor.white.withAlphaComponent(0.78)
+        ]
+        let confidenceSize = confidenceText.size(withAttributes: confidenceAttributes)
+        confidenceText.draw(
+            at: CGPoint(x: center.x - confidenceSize.width / 2, y: markerRect.maxY + 8),
+            withAttributes: confidenceAttributes
+        )
+    }
+}
+
 // MARK: - Camera View Controller
 
 class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer!
     var classificationLabel = UILabel()
     var onDismiss: (() -> Void)?
     
@@ -45,6 +228,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     private let motionDetector = MotionDetector()
     private var hasDriveStarted = false
     
+    private let roadView = DrivingRoadView()
     private let dashboardOverlay = UIView()
     private let speedLabel = UILabel()
     private let speedCaptionLabel = UILabel()
@@ -155,12 +339,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         captureSession.addInput(input)
-        
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
-        
+
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.alwaysDiscardsLateVideoFrames = true
         dataOutput.setSampleBufferDelegate(self, queue: visionQueue)
@@ -172,10 +351,13 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func setupDashboard() {
+        roadView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(roadView)
+        
         setupLabel()
         
         dashboardOverlay.translatesAutoresizingMaskIntoConstraints = false
-        dashboardOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.58)
+        dashboardOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.72)
         view.addSubview(dashboardOverlay)
         
         speedLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -191,7 +373,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         speedCaptionLabel.textAlignment = .center
         
         driveStatusLabel.translatesAutoresizingMaskIntoConstraints = false
-        driveStatusLabel.text = "Camera detection active"
+        driveStatusLabel.text = "Live detection active"
         driveStatusLabel.textColor = UIColor.white.withAlphaComponent(0.78)
         driveStatusLabel.font = .systemFont(ofSize: 15, weight: .medium)
         driveStatusLabel.textAlignment = .center
@@ -245,6 +427,11 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         view.addSubview(closeButton)
         
         NSLayoutConstraint.activate([
+            roadView.topAnchor.constraint(equalTo: view.topAnchor),
+            roadView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            roadView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            roadView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             closeButton.widthAnchor.constraint(equalToConstant: 112),
@@ -281,6 +468,8 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         let mph = max(0, motionDetector.currentSpeed * 2.23694)
         speedLabel.text = "\(Int(mph.rounded()))"
         driveStatusLabel.text = motionDetector.isMoving ? "Moving - scanning ahead" : "Stopped - checking full stop"
+        roadView.speed = mph
+        roadView.isMoving = motionDetector.isMoving
     }
     
     // MARK: - Video Capture Delegate
@@ -341,6 +530,9 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                     if let lbl = stop.labels.first {
                         let conf = max(stop.confidence, lbl.confidence)
                         self.updateClassificationLabel(with: lbl.identifier, confidence: conf)
+                        DispatchQueue.main.async {
+                            self.roadView.showStopSign(confidence: conf)
+                        }
                         
                         // Pass bounding box to stability gate for spatial + temporal check
                         let isStable = self.stability.update(present: true)
