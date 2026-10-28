@@ -36,6 +36,7 @@ struct DriveHistoryView: View {
                     Button(action: refreshDrives) {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .accessibilityLabel("Refresh drives")
                     .disabled(driveManager.isLoading)
                 }
             }
