@@ -25,6 +25,7 @@ struct ProfileSelectionView: View {
                         Image(systemName: "plus.circle.fill")
                             .font(.title2)
                     }
+                    .accessibilityLabel("Add profile")
                 }
             }
             .sheet(isPresented: $showingAddUser) {
