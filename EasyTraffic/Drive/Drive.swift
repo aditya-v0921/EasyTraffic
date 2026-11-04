@@ -41,7 +41,8 @@ struct Drive: Identifiable, Codable {
         let totalStops = events.count
         let fullStops = events.filter { $0.didFullStop }.count
         let rollingStops = totalStops - fullStops
-        let avgDuration = events.compactMap { $0.stopDuration }.reduce(0, +) / Double(max(totalStops, 1))
+        let durations = events.compactMap { $0.stopDuration }
+        let avgDuration = durations.reduce(0, +) / Double(max(durations.count, 1))
         
         return DriveSummary(
             driveId: id,
