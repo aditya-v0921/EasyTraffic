@@ -101,10 +101,10 @@ class MotionDetector: NSObject, ObservableObject {
     }
     
     // Refactored state change logic for clarity
-    private func handleStateChange(isStopped: Bool) {
+    func handleStateChange(isStopped: Bool) {
         if isStopped {
-            if isMoving {
-                // Transition from Moving -> Stopped
+            if isMoving || stopDetectionStartTime == nil {
+                // Start timing on the first stationary reading or after movement.
                 isMoving = false
                 stopDetectionStartTime = Date()
                 print("Vehicle stopped")

@@ -39,6 +39,33 @@ final class EasyTrafficTests: XCTestCase {
         XCTAssertEqual(drive.summary.averageStopDuration, 0)
     }
 
+    @MainActor
+    func testInitialStationaryReadingStartsStopTimer() {
+        let detector = MotionDetector()
+        XCTAssertNil(detector.stopDuration)
+
+        detector.handleStateChange(isStopped: true)
+
+        XCTAssertFalse(detector.isMoving)
+        XCTAssertNotNil(detector.stopDuration)
+        XCTAssertFalse(detector.didFullStop)
+    }
+
+    @MainActor
+    func testStationaryReadingsPreserveTimerAndMovementClearsIt() {
+        let detector = MotionDetector()
+        detector.handleStateChange(isStopped: true)
+        let initialDuration = detector.stopDuration!
+
+        detector.handleStateChange(isStopped: true)
+        XCTAssertGreaterThanOrEqual(detector.stopDuration!, initialDuration)
+
+        detector.handleStateChange(isStopped: false)
+        XCTAssertTrue(detector.isMoving)
+        XCTAssertNil(detector.stopDuration)
+        XCTAssertFalse(detector.didFullStop)
+    }
+
     func testExample() throws {
   
     }
