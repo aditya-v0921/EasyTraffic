@@ -59,6 +59,7 @@ class MotionDetector: NSObject, ObservableObject {
     func stopMonitoring() {
         locationManager.stopUpdatingLocation()
         motionManager.stopAccelerometerUpdates()
+        reset()
         print("Motion monitoring stopped")
     }
     
