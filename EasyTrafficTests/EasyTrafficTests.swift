@@ -92,6 +92,35 @@ final class EasyTrafficTests: XCTestCase {
         XCTAssertNil(detector.stopDuration)
     }
 
+    func testDeduperUsesAnnouncementCategoryInsteadOfModelLabel() {
+        let deduper = Deduper()
+        let detection = DetectedObject(
+            bbox: CGRect(x: 0.2, y: 0.2, width: 0.3, height: 0.3),
+            confidence: 0.9, label: "3", timestamp: Date()
+        )
+
+        XCTAssertTrue(deduper.isNewObject(detection, label: "stop_sign"))
+        XCTAssertFalse(deduper.isNewObject(detection, label: "stop_sign"))
+        XCTAssertTrue(deduper.isNewObject(detection, label: "other_sign"))
+        XCTAssertFalse(deduper.isNewObject(detection, label: "other_sign"))
+    }
+
+    func testDeduperRemembersCategoryAfterSpatiallyNewDetection() {
+        let deduper = Deduper()
+        let first = DetectedObject(
+            bbox: CGRect(x: 0, y: 0, width: 0.2, height: 0.2),
+            confidence: 0.9, label: "3", timestamp: Date()
+        )
+        let second = DetectedObject(
+            bbox: CGRect(x: 0.7, y: 0.7, width: 0.2, height: 0.2),
+            confidence: 0.9, label: "3", timestamp: Date()
+        )
+
+        XCTAssertTrue(deduper.isNewObject(first, label: "stop_sign"))
+        XCTAssertTrue(deduper.isNewObject(second, label: "stop_sign"))
+        XCTAssertFalse(deduper.isNewObject(second, label: "stop_sign"))
+    }
+
     func testExample() throws {
   
     }

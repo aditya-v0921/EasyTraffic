@@ -33,6 +33,7 @@ final class StabilityGate {
 
 final class Deduper {
     private var lastAnnounced: DetectedObject?
+    private var lastAnnouncedLabel: String?
     
     private func iou(_ a: CGRect, _ b: CGRect) -> CGFloat {
         let inter = a.intersection(b)
@@ -52,8 +53,9 @@ final class Deduper {
            Date().timeIntervalSince(last.timestamp) > forgetAfter {
             lastAnnounced = nil
         }
-        guard let last = lastAnnounced, last.label == label else {
+        guard let last = lastAnnounced, lastAnnouncedLabel == label else {
             lastAnnounced = obj
+            lastAnnouncedLabel = label
             return true
         }
         // If it's basically the same box, don't announce again
@@ -61,6 +63,7 @@ final class Deduper {
             return false
         }
         lastAnnounced = obj
+        lastAnnouncedLabel = label
         return true
     }
 }
