@@ -12,6 +12,7 @@ class MotionDetector: NSObject, ObservableObject {
     @Published var currentSpeed: Double = 0 // m/s
     
     private var stopDetectionStartTime: Date?
+    private var stopCheckGeneration = UUID()
     private let isStoppedThreshold: Double = 0.5 // m/s
     private let requiredStopDuration: TimeInterval = 2.0
     
@@ -132,13 +133,15 @@ class MotionDetector: NSObject, ObservableObject {
     // MARK: - Stop Detection for Events
     
     func checkIfStoppedAtStopSign(completion: @escaping (Bool, TimeInterval?) -> Void) {
+        let generation = stopCheckGeneration
         DispatchQueue.main.asyncAfter(deadline: .now() + requiredStopDuration + 0.5) { [weak self] in
-            guard let self = self else { return }
+            guard let self = self, self.stopCheckGeneration == generation else { return }
             completion(self.didFullStop, self.stopDuration)
         }
     }
     
     func reset() {
+        stopCheckGeneration = UUID()
         stopDetectionStartTime = nil
         isMoving = false
         currentSpeed = 0

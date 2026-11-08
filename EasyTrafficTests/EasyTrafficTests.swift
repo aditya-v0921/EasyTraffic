@@ -121,6 +121,37 @@ final class EasyTrafficTests: XCTestCase {
         XCTAssertFalse(deduper.isNewObject(second, label: "stop_sign"))
     }
 
+    @MainActor
+    func testStoppingMonitoringCancelsPendingStopCheck() async {
+        let detector = MotionDetector()
+        let staleCheck = expectation(description: "Ended drive must not receive a stop result")
+        staleCheck.isInverted = true
+        detector.checkIfStoppedAtStopSign { _, _ in
+            staleCheck.fulfill()
+        }
+
+        detector.stopMonitoring()
+
+        await fulfillment(of: [staleCheck], timeout: 3)
+        XCTAssertNil(detector.stopDuration)
+    }
+
+    @MainActor
+    func testNewStopCheckCompletesAfterReset() async {
+        let detector = MotionDetector()
+        detector.reset()
+        detector.handleStateChange(isStopped: true)
+        let completed = expectation(description: "Current stop check completes")
+        detector.checkIfStoppedAtStopSign { didStop, duration in
+            XCTAssertTrue(didStop)
+            XCTAssertGreaterThanOrEqual(duration ?? 0, 2)
+            completed.fulfill()
+        }
+
+        await fulfillment(of: [completed], timeout: 4)
+        XCTAssertTrue(detector.didFullStop)
+    }
+
     func testExample() throws {
   
     }
