@@ -153,8 +153,10 @@ class MotionDetector: NSObject, ObservableObject {
 extension MotionDetector: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        let generation = stopCheckGeneration
         
         DispatchQueue.main.async {
+            guard self.stopCheckGeneration == generation else { return }
             self.currentLocation = location.coordinate
             // Ensure negative speed (invalid) is treated as 0
             self.currentSpeed = max(0, location.speed)
