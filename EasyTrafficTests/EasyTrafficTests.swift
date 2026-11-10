@@ -191,6 +191,16 @@ final class EasyTrafficTests: XCTestCase {
         XCTAssertEqual(detector.currentLocation?.longitude, -119.8)
     }
 
+    @MainActor
+    func testResetClearsLocationFromPreviousDrive() {
+        let detector = MotionDetector()
+        detector.currentLocation = CLLocationCoordinate2D(latitude: 34.4, longitude: -119.8)
+
+        detector.reset()
+
+        XCTAssertNil(detector.currentLocation)
+    }
+
     func testExample() throws {
   
     }

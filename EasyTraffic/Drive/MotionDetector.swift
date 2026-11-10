@@ -145,6 +145,7 @@ class MotionDetector: NSObject, ObservableObject {
         stopDetectionStartTime = nil
         isMoving = false
         currentSpeed = 0
+        currentLocation = nil
     }
 }
 
