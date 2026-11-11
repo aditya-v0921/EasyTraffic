@@ -156,6 +156,8 @@ final class EasyTrafficTests: XCTestCase {
     @MainActor
     func testResetRejectsQueuedLocationUpdate() async {
         let detector = MotionDetector()
+        detector.startMonitoring()
+        defer { detector.stopMonitoring() }
         let manager = CLLocationManager()
         let location = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 34.4, longitude: -119.8),
@@ -175,6 +177,8 @@ final class EasyTrafficTests: XCTestCase {
     @MainActor
     func testLocationUpdateAfterResetIsAccepted() async {
         let detector = MotionDetector()
+        detector.startMonitoring()
+        defer { detector.stopMonitoring() }
         detector.reset()
         let location = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 34.4, longitude: -119.8),
@@ -199,6 +203,26 @@ final class EasyTrafficTests: XCTestCase {
         detector.reset()
 
         XCTAssertNil(detector.currentLocation)
+    }
+
+    @MainActor
+    func testLocationCallbackAfterMonitoringStopsIsIgnored() async {
+        let detector = MotionDetector()
+        detector.startMonitoring()
+        detector.stopMonitoring()
+        let location = CLLocation(
+            coordinate: CLLocationCoordinate2D(latitude: 34.4, longitude: -119.8),
+            altitude: 0, horizontalAccuracy: 5, verticalAccuracy: 5,
+            course: 0, speed: 8, timestamp: Date()
+        )
+        detector.locationManager(CLLocationManager(), didUpdateLocations: [location])
+        let drained = expectation(description: "Late location callback processed")
+        DispatchQueue.main.async { drained.fulfill() }
+
+        await fulfillment(of: [drained], timeout: 1)
+        XCTAssertEqual(detector.currentSpeed, 0)
+        XCTAssertNil(detector.currentLocation)
+        XCTAssertNil(detector.stopDuration)
     }
 
     func testExample() throws {

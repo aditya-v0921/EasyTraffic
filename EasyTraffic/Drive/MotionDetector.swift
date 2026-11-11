@@ -13,6 +13,7 @@ class MotionDetector: NSObject, ObservableObject {
     
     private var stopDetectionStartTime: Date?
     private var stopCheckGeneration = UUID()
+    private var isMonitoring = false
     private let isStoppedThreshold: Double = 0.5 // m/s
     private let requiredStopDuration: TimeInterval = 2.0
     
@@ -45,12 +46,15 @@ class MotionDetector: NSObject, ObservableObject {
     // MARK: - Start/Stop Monitoring
     
     func startMonitoring() {
+        isMonitoring = true
+        let generation = stopCheckGeneration
         locationManager.startUpdatingLocation()
         
         if motionManager.isAccelerometerAvailable {
             motionManager.accelerometerUpdateInterval = 0.1
             motionManager.startAccelerometerUpdates(to: .main) { [weak self] data, error in
-                guard let self = self, let data = data else { return }
+                guard let self = self, self.isMonitoring,
+                      self.stopCheckGeneration == generation, let data = data else { return }
                 self.processAccelerometerData(data)
             }
         }
@@ -58,6 +62,7 @@ class MotionDetector: NSObject, ObservableObject {
     }
     
     func stopMonitoring() {
+        isMonitoring = false
         locationManager.stopUpdatingLocation()
         motionManager.stopAccelerometerUpdates()
         reset()
@@ -153,11 +158,11 @@ class MotionDetector: NSObject, ObservableObject {
 
 extension MotionDetector: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
+        guard isMonitoring, let location = locations.last else { return }
         let generation = stopCheckGeneration
         
         DispatchQueue.main.async {
-            guard self.stopCheckGeneration == generation else { return }
+            guard self.isMonitoring, self.stopCheckGeneration == generation else { return }
             self.currentLocation = location.coordinate
             // Ensure negative speed (invalid) is treated as 0
             self.currentSpeed = max(0, location.speed)
