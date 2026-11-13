@@ -20,4 +20,17 @@ Open `EasyTraffic.xcodeproj` in Xcode. Set the app target's `GOOGLE_MAPS_API_KEY
 
 The app checks the resolved Info.plist value first, then the environment variable. If neither is set, it logs a missing-key message and skips Google Maps initialization.
 
+## Simulator tests
+
+List the available simulators from the repository root, then substitute an iOS Simulator ID in the test command:
+
+```sh
+xcodebuild -project EasyTraffic.xcodeproj -scheme EasyTraffic -showdestinations
+xcodebuild -project EasyTraffic.xcodeproj -scheme EasyTraffic \
+  -destination 'platform=iOS Simulator,id=SIMULATOR_ID' \
+  -only-testing:EasyTrafficTests CODE_SIGNING_ALLOWED=NO test
+```
+
+These unit tests cover drive summaries, stop timing, location callbacks, and detection deduplication. Use a physical iPhone to validate live camera input, motion and GPS readings, and spoken alerts. Firebase access needs a separate check against your configured backend.
+
 Email: adityagv30@gmail.com
